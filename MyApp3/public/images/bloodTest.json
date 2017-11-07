@@ -1,0 +1,78 @@
+[
+  {
+    "AST":"17",
+    "ALT":"8",
+    "TSH":"1.9",
+    "Free T4":"17",
+    "Hb":"11",
+    "Hct":"0.34",
+    "RBC":"3.84",
+    "MCV":"88",
+    "MCHC":"30",
+    "RandomDistributionWidth":"339",
+    "WBC":"5.0",
+    "Platelets":"155",
+    "MPV":"9.7",
+    "DIFFERENTIAL WBC'S":"",
+    "Netrophils(A)":"3.60",
+    "Lymphocytes(A)":"0.90(L)",
+    "Monocytes(A)":"0.40",
+    "Eosinophils(A)":"0.05",
+    "Basophils(A)":"0.05",
+    "URINALYSIS CHEMICAL":"",
+    "UrineGlucose":"NEG",
+    "UrinePilirubin":"NEG",
+    "UrineKetones":"NEG",
+    "UrineSpecificGravity":"1.018",
+    "Urine Blood":"NEG",
+    "Urine PH":"7.5",
+    "UrineProtein":"NEG",
+    "UrineUrobilinogen":"3.2",
+    "UrineNitrite":"NEG",
+    "UrineLeukocytes":"NEG"
+  }
+]
+
+
+/*
+{
+  "name":"Blood_Test",
+  "children":
+  [
+    {
+      "name":"Patient Information" ,
+      "children":
+      [
+        {"name":"Name: ###"},
+        {"name":"Age---24"},
+        {"name":"Sex---Male"},
+        {"name":"Address---###"},
+        {"name":"Phone---###"},
+        {"name":"Date---2015-01-01"}
+      ]
+    },
+
+    {
+      "name":"Result" ,
+      "children":
+      [
+        {"name":"WBC---5.1"},
+        {"name":"RBC---4.94"},
+        {"name":"Hemoglobin---15.1"},
+        {"name":"Hematocrit---46.2"},
+        {"name":"MCV---94"},
+        {"name":"MCH---30.6"},
+        {"name":"MCHC---32.7"},
+        {"name":"RDW---13.2"},
+        {"name":"Platelets---201"},
+        {"name":"Neutrophils---44"},
+        {"name":"Lymphs---44"},
+        {"name":"Monocytes---9"},
+        {"name":"Eos---3"},
+        {"name":"Basos---0"}
+      ]
+    }
+  ]
+}
+        */
+

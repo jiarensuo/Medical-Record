@@ -1,0 +1,704 @@
+<html>
+<head>
+    <title>bloodTest</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/javascripts/canvasjs.min.js"></script>
+</head>
+
+<body>
+    <div id="chartContainer" style="position:absolute; left:650px; z-index: 5; height: 300px; width: 50%;"></div>
+    <div class="container" >
+        <h2>
+            Name:***&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+            Birth Date:****/**/**&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+            #42357 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        </h2>
+        <p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;B12 SUPPLEMENTATION AT A LEVEL <br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <148 pmol/L</p>
+        <p>Ferritin
+            <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<12 Iron deficient
+            <br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;12-30Depleted iron stores
+            <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;31-79 Reduced iron stores
+            <br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;80-300Normal iron stores
+            <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;>300 Likely iron overload
+        </p>
+        <table class="table table-striped">
+            <thead>
+                <tr id = "date">
+                    <th>Code</th>
+                    <th>Normal Range</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr id = "1" onclick="line(17,19,18,'blue','blue','blue','AST')">
+                    <td>AST</td>
+                    <td><=30.99</td>
+                </tr>
+                <tr id = "2" onclick="line(8,20,10,'blue','blue','blue','ALT')">
+                    <td>ALT</td>
+                    <td><=35.99</td>
+                </tr>
+                <tr id = "3" onclick="line(1.9,5.9,3.9,'blue','red','blue','TSH')">
+                    <td>TSH</td>
+                    <td>0.35 - 5.0</td>
+                </tr>
+                <tr id = "4" onclick="line(17,19,19,'blue','blue','blue','Free T4')">
+                    <td>Free T4</td>
+                    <td>12 - 22</td>
+                </tr>
+                <tr id = "5" onclick="line(119,139,129,'blue','blue','blue','Hb')">
+                    <td>Hb</td>
+                    <td>115 - 155.000</td>
+                </tr>
+                <tr id = "6" onclick="line(0.34,0.44,0.54,'blue','blue','red','Hct')">
+                    <td>Hct</td>
+                    <td>0.33 - 0.450</td>
+                </tr>
+                <tr id = "7" onclick="line(3.84,3.44,3.94,'blue','red','blue','RBC')">
+                    <td>RBC</td>
+                    <td>3.6 - 5.010</td>
+                </tr>
+                <tr id = "8" onclick="line(88,98,88,'blue','blue','blue','MVC')">
+                    <td>MVC</td>
+                    <td>80 - 99.000</td>
+                </tr>
+                <tr id = "9" onclick="line(30,31,37,'blue','blue','red','MCH')">
+                    <td>MCH</td>
+                    <td>27 - 32.000</td>
+                </tr>
+                <tr id = "10" onclick="line(339,319,359,'blue','red','blue','MCHC')">
+                    <td>MCHC</td>
+                    <td>320 - 360.000</td>
+                </tr>
+                <tr id = "11" onclick="line(13.9,11.9,12.9,'blue','blue','blue','RandomDistributionWidthC')">
+                    <td>RandomDistributionWidth</td>
+                    <td>11.5 - 15.5000</td>
+                </tr>
+                <tr id = "12" onclick="line(5.0,9.0,8.0,'blue','blue','blue','WBC')">
+                    <td>WBC</td>
+                    <td>4 - 11.000</td>
+                </tr>
+                <tr id = "13" onclick="line(155,255,245,'blue','blue','blue','Platelets')">
+                    <td>Platelets</td>
+                    <td>145 - 400.000</td>
+                </tr>
+                <tr id = "14" onclick="line(9.7,7.7,6.7,'blue','blue','red','MPV')">
+                    <td>MPV</td>
+                    <td>7.4 - 11.300</td>
+                </tr>
+                <tr id = "15">
+                    <td><b>DIFFERENTIAL WBC'S</b></td>
+                    <td></td>
+                </tr>
+                <tr id = "16" onclick="line(3.60,6.60,6.60,'blue','blue','blue','Neutrophils (A)')">
+                    <td>Neutrophils (A)</td>
+                    <td>1.80 - 7.00</td>
+                </tr>
+                <tr id = "17" onclick="line(0.90,1.90,1.90,'red','blue','blue','Lymphocytes (A)')">
+                    <td>Lymphocytes (A)</td>
+                    <td>1.00 - 3.20</td>
+                </tr>
+                <tr id = "18" onclick="line(0.40,0.30,0.30,'blue','blue','blue','Monocytes (A)')">
+                    <td>Monocytes (A)</td>
+                    <td>0.00 - 0.80</td>
+                </tr>
+                <tr id = "19" onclick="line(0.05,0.15,0.15,'blue','blue','blue','Eosinophils (A)')">
+                    <td>Eosinophils (A)</td>
+                    <td>0.00 - 0.40</td>
+                </tr>
+                <tr id = "20" onclick="line(0.05,0.15,0.15,'blue','blue','blue','Basophils (A)')">
+                    <td>Basophils (A)</td>
+                    <td>0.00 - 0.20</td>
+                </tr>
+                <tr id = "21">
+                    <td><b>URINALYSIS CHEMICAL</b></td>
+                    <td></td>
+                </tr>
+                <tr id = "22">
+                    <td>UrineGlucose</td>
+                    <td>NEG</td>
+                </tr>
+                <tr id = "23">
+                    <td>UrinePillirubin</td>
+                    <td>NEG</td>
+                </tr>
+                <tr id = "24">
+                    <td>UrineKetones</td>
+                    <td>NEG</td>
+                </tr>
+                <tr id = "25" onclick="line(1.018,1.028,1.018,'blue','blue','blue','UrineSpecificGravity')">
+                    <td>UrineSpecificGravity</td>
+                    <td>1.005 - 1.030</td>
+                </tr>
+                <tr id = "26">
+                    <td>Urine Blod</td>
+                    <td>NEG</td>
+                </tr>
+                <tr id = "27" onclick="line(7.5,7.5,6.5,'blue','blue','blue','Urine PH')">
+                    <td>Urine PH</td>
+                    <td>5 - 8.000</td>
+                </tr>
+                <tr id = "28">
+                    <td>UrineProtein</td>
+                    <td>NEG</td>
+                </tr>
+                <tr id = "29" onclick="line(3.2,10.2,11.2,'blue','blue','blue','UrineUrobilinogen')">
+                    <td>UrineUrobilinogen</td>
+                    <td>< 32.999</td>
+                </tr>
+                <tr id = "30">
+                    <td>UrineNitrite</td>
+                    <td>NEG</td>
+                </tr>
+                <tr id = "31">
+                    <td>UrineLeukocytes</td>
+                    <td>NEG</td>
+                </tr>
+                <tr id = "32">
+                    <td><b>URINE CULTURE</b></td>
+                    <td></td>
+                </tr>
+                <tr id = "33">
+                    <td><b>CREATININE</b></td>
+                    <td></td>
+                </tr>
+                <tr id = "34" onclick="line(60,90,93,'blue','blue','blue','Cr')">
+                    <td>Cr</td>
+                    <td>50 - 100.00</td>
+                </tr>
+                <tr id = "35" onclick="line(90,70,68,'blue','blue','blue','eGFR')">
+                    <td>eGFR</td>
+                    <td>>= 60</td>
+                </tr>
+                <tr id = "36" onclick="line(4.66,2.66,2.76,'blue','blue','blue','CHOL')">
+                    <td>CHOL</td>
+                    <td><= 5.19</td>
+                </tr>
+                <tr id = "37" onclick="line(0.69,1.29,1.39,'blue','blue','blue','TG')">
+                    <td>TG</td>
+                    <td><= 1.69</td>
+                </tr>
+                <tr id = "38" onclick="line(1.94,2.94,2.74,'blue','blue','blue','HDL')">
+                    <td>HDL</td>
+                    <td>>= 1.3</td>
+                </tr>
+                <tr id = "39">
+                    <td><b>LDLCHOLESTEROLCALC</b></td>
+                    <td></td>
+                </tr>
+                <tr id = "40" onclick="line(2.40,2.40,2.30,'LDL')">
+                    <td>LDL</td>
+                    <td></td>
+                </tr>
+                <tr id = "41">
+                    <td><b>NON-HDL-CHOLESTEROL(CALC</b></td>
+                    <td></td>
+                </tr>
+                <tr id = "42" onclick="line(5.72,2.72,2.62,'red','blue','blue','NON-HDL-CHOLESTEROL(CALC)')">
+                    <td>NON-HDL-CHOLESTEROL(CALC)</td>
+                    <td><= 4.29</td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        var response = [
+            {
+                "A":"17",
+                "B":"8",
+                "C":"1.9",
+                "D":"17",
+                "E":"119",
+                "F":"0.34",
+                "G":"3.84",
+                "H":"88",
+                "I":"30",
+                "J":"339",
+                "K":"13.9",
+                "L":"5.0",
+                "M":"155",
+                "N":"9.7",
+                "O":"",
+                "P":"3.60",
+                "Q":"0.90",
+                "R":"0.40",
+                "S":"0.05",
+                "T":"0.05",
+                "U":"",
+                "V":"NEG",
+                "W":"NEG",
+                "X":"NEG",
+                "Y":"1.018",
+                "Z":"NEG",
+                "AA":"7.5",
+                "BB":"NEG",
+                "CC":"3.2",
+                "DD":"NEG",
+                "EE":"NEG",
+                "FF":"",
+                "GG":"",
+                "HH":"60",
+                "II":"90",
+                "JJ":"4.66",
+                "KK":"0.69",
+                "LL":"1.94",
+                "MM":"",
+                "NN":"2.40",
+                "OO":"",
+                "PP":"5.72"
+            },
+            {
+                "A":"19",
+                "B":"20",
+                "C":"5.9",
+                "D":"19",
+                "E":"139",
+                "F":"0.44",
+                "G":"3.44",
+                "H":"98",
+                "I":"31",
+                "J":"319",
+                "K":"11.9",
+                "L":"9.0",
+                "M":"255",
+                "N":"7.7",
+                "O":"",
+                "P":"6.60",
+                "Q":"1.90",
+                "R":"0.30",
+                "S":"0.15",
+                "T":"0.15",
+                "U":"",
+                "V":"NEG",
+                "W":"NEG",
+                "X":"NEG",
+                "Y":"1.028",
+                "Z":"NEG",
+                "AA":"7.5",
+                "BB":"NEG",
+                "CC":"10.2",
+                "DD":"NEG",
+                "EE":"POSITIVE",
+                "FF":"",
+                "GG":"",
+                "HH":"90",
+                "II":"70",
+                "JJ":"2.66",
+                "KK":"1.29",
+                "LL":"2.94",
+                "MM":"",
+                "NN":"2.40",
+                "OO":"",
+                "PP":"2.72"
+            },
+            {
+                "A":"18",
+                "B":"10",
+                "C":"3.9",
+                "D":"19",
+                "E":"129",
+                "F":"0.54",
+                "G":"3.94",
+                "H":"88",
+                "I":"37",
+                "J":"359",
+                "K":"12.9",
+                "L":"8.0",
+                "M":"245",
+                "N":"6.7",
+                "O":"",
+                "P":"6.60",
+                "Q":"1.90",
+                "R":"0.30",
+                "S":"0.15",
+                "T":"0.15",
+                "U":"",
+                "V":"NEG",
+                "W":"NEG",
+                "X":"NEG",
+                "Y":"1.018",
+                "Z":"NEG",
+                "AA":"6.5",
+                "BB":"NEG",
+                "CC":"11.2",
+                "DD":"NEG",
+                "EE":"POSITIVE",
+                "FF":"",
+                "GG":"",
+                "HH":"93",
+                "II":"68",
+                "JJ":"2.76",
+                "KK":"1.39",
+                "LL":"2.74",
+                "MM":"",
+                "NN":"2.30",
+                "OO":"",
+                "PP":"2.62"
+            }
+        ];
+
+        $.each(response, function(i, item) {
+            if (i == 0)
+            {
+                $('#date').append("<th>05/01/2015</th>");
+            }
+            if (i == 1)
+            {
+                $('#date').append("<th>06/02/2015</th>");
+            }
+            if (i == 2)
+            {
+                $('#date').append("<th>09/03/2015</th>");
+            }
+
+            if(response[i].A >30.99){
+                $('#1').append("<td bgcolor = 'RED'>" + response[i].A + "</td>");
+            }else if(response[i].A <= 30.99){
+                $('#1').append("<td>" + response[i].A + "</td>");
+            }
+
+            if(response[i].B > 35.99){
+                $('#2').append("<td bgcolor = 'RED'>" + response[i].B + "</td>");
+            }else if(response[i].B <= 35.99){
+                $('#2').append("<td>" + response[i].B + "</td>");
+            }
+
+            if(response[i].C > 5.0 || response[i].C < 0.35){
+                $('#3').append("<td bgcolor = 'RED'>" + response[i].C + "</td>");
+            }else if(response[i].C <= 5.0 && response[i].C >= 0.35){
+                $('#3').append("<td>" + response[i].C + "</td>");
+            }
+
+            if(response[i].D > 22 || response[i].D < 12){
+                $('#4').append("<td bgcolor = 'RED'>" + response[i].D + "</td>");
+            }else if(response[i].D <= 22 && response[i].D >= 12){
+                $('#4').append("<td>" + response[i].D + "</td>");
+            }
+
+
+            if(response[i].E > 155 || response[i].E < 115){
+                $('#5').append("<td bgcolor = 'RED'>" + response[i].E + "</td>");
+            }else if(response[i].E <= 155 && response[i].E >= 115){
+                $('#5').append("<td>" + response[i].E + "</td>");
+            }
+
+            if(response[i].F > 0.45 || response[i].F < 0.33){
+                $('#6').append("<td bgcolor = 'RED'>" + response[i].F + "</td>");
+            }else if(response[i].F <= 0.45 && response[i].F >= 0.33){
+                $('#6').append("<td>" + response[i].F + "</td>");
+            }
+
+            if(response[i].G > 5.01 || response[i].G < 3.6){
+                $('#7').append("<td bgcolor = 'RED'>" + response[i].G + "</td>");
+            }else if(response[i].G <= 5.01 && response[i].G >= 3.6){
+                $('#7').append("<td>" + response[i].G + "</td>");
+            }
+
+            if(response[i].H > 99 || response[i].H < 80){
+                $('#8').append("<td bgcolor = 'RED'>" + response[i].H + "</td>");
+            }else if(response[i].H <= 99 && response[i].H >= 80){
+                $('#8').append("<td>" + response[i].H+ "</td>");
+            }
+
+            if(response[i].I> 32 || response[i].I < 27){
+                $('#9').append("<td bgcolor = 'RED'>" + response[i].I + "</td>");
+            }else if(response[i].I <= 32 && response[i].I >= 27){
+                $('#9').append("<td>" + response[i].I + "</td>");
+            }
+
+            if(response[i].J> 360 || response[i].J < 320){
+                $('#10').append("<td bgcolor = 'RED'>" + response[i].J + "</td>");
+            }else if(response[i].J <= 360 && response[i].J >= 320){
+                $('#10').append("<td>" + response[i].J + "</td>");
+            }
+
+            if(response[i].K> 15.5 || response[i].K < 11.5){
+                $('#11').append("<td bgcolor = 'RED'>" + response[i].K + "</td>");
+            }else if(response[i].K <= 15.5 && response[i].K >= 11.5){
+                $('#11').append("<td>" + response[i].K + "</td>");
+            }
+
+            if(response[i].L> 11 || response[i].L < 4){
+                $('#12').append("<td bgcolor = 'RED'>" + response[i].L + "</td>");
+            }else if(response[i].L <= 11 && response[i].L >= 4){
+                $('#12').append("<td>" + response[i].L + "</td>");
+            }
+
+
+            if(response[i].M> 400 || response[i].M < 145){
+                $('#13').append("<td bgcolor = 'RED'>" + response[i].M + "</td>");
+            }else if(response[i].M <= 400 && response[i].M >= 145){
+                $('#13').append("<td>" + response[i].M + "</td>");
+            }
+
+            if(response[i].N > 11.3 || response[i].N < 7.4){
+                $('#14').append("<td bgcolor = 'RED'>" + response[i].N + "</td>");
+            }else if(response[i].N <= 11.3 && response[i].N >= 7.4){
+                $('#14').append("<td>" + response[i].N + "</td>");
+            }
+
+            $('#15').append("<td>" + response[i].O + "</td>");
+
+            if(response[i].P > 7 || response[i].P < 1.8){
+                $('#16').append("<td bgcolor = 'RED'>" + response[i].P + "</td>");
+            }else if(response[i].P <= 7 &&  response[i].P >= 1.8){
+                $('#16').append("<td>" + response[i].P + "</td>");
+            }
+
+            if(response[i].Q > 3.2 || response[i].Q < 1){
+                $('#17').append("<td bgcolor = 'RED'>" + response[i].Q + "</td>");
+            }else if(response[i].Q <= 3.2 &&  response[i].Q >= 1){
+                $('#17').append("<td>" + response[i].Q + "</td>");
+            }
+
+            if(response[i].R > 0.8 || response[i].R < 0){
+                $('#18').append("<td bgcolor = 'RED'>" + response[i].R + "</td>");
+            }else if(response[i].R <= 0.8 &&  response[i].R >= 0){
+                $('#18').append("<td>" + response[i].R + "</td>");
+            }
+
+            if(response[i].S > 0.4 || response[i].S < 0){
+                $('#19').append("<td bgcolor = 'RED'>" + response[i].S + "</td>");
+            }else if(response[i].S <= 0.4 &&  response[i].S >= 0){
+                $('#19').append("<td>" + response[i].S + "</td>");
+            }
+
+            if(response[i].T > 0.2 || response[i].T < 0){
+                $('#20').append("<td bgcolor = 'RED'>" + response[i].T + "</td>");
+            }else if(response[i].T <= 0.2 &&  response[i].T >= 0){
+                $('#20').append("<td>" + response[i].T + "</td>");
+            }
+
+            $('#21').append("<td>" + response[i].U + "</td>");
+
+            if(response[i].V != "NEG"){
+                $('#22').append("<td bgcolor = 'RED'>" + response[i].V + "</td>");
+            }else if(response[i].V == "NEG"){
+                $('#22').append("<td>" + response[i].V + "</td>");
+            }
+
+            if(response[i].W != "NEG"){
+                $('#23').append("<td bgcolor = 'RED'>" + response[i].W + "</td>");
+            }else if(response[i].W == "NEG"){
+                $('#23').append("<td>" + response[i].W + "</td>");
+            }
+
+            if(response[i].X != "NEG"){
+                $('#24').append("<td bgcolor = 'RED'>" + response[i].X + "</td>");
+            }else if(response[i].X == "NEG"){
+                $('#24').append("<td>" + response[i].X + "</td>");
+            }
+
+            if(response[i].Y > 1.030 || response[i].Y < 1.005){
+                $('#25').append("<td bgcolor = 'RED'>" + response[i].Y + "</td>");
+            }else if(response[i].Y <= 1.030 &&  response[i].Y >= 1.005){
+                $('#25').append("<td>" + response[i].Y + "</td>");
+            }
+
+            if(response[i].Z != "NEG"){
+                $('#26').append("<td bgcolor = 'RED'>" + response[i].Z + "</td>");
+            }else if(response[i].Z == "NEG"){
+                $('#26').append("<td>" + response[i].Z + "</td>");
+            }
+
+            if(response[i].AA > 8 || response[i].AA < 5){
+                $('#27').append("<td bgcolor = 'RED'>" + response[i].AA + "</td>");
+            }else if(response[i].AA <= 8 &&  response[i].AA >= 5){
+                $('#27').append("<td>" + response[i].AA + "</td>");
+            }
+
+            if(response[i].BB != "NEG"){
+                $('#28').append("<td bgcolor = 'RED'>" + response[i].BB + "</td>");
+            }else if(response[i].BB == "NEG"){
+                $('#28').append("<td>" + response[i].BB + "</td>");
+            }
+
+            if(response[i].CC > 32.999){
+                $('#29').append("<td bgcolor = 'RED'>" + response[i].CC + "</td>");
+            }else if(response[i].AA <= 32.999){
+                $('#29').append("<td>" + response[i].CC + "</td>");
+            }
+
+            if(response[i].DD != "NEG"){
+                $('#30').append("<td bgcolor = 'RED'>" + response[i].DD + "</td>");
+            }else if(response[i].DD == "NEG"){
+                $('#30').append("<td>" + response[i].DD + "</td>");
+            }
+
+            if(response[i].EE != "NEG"){
+                $('#31').append("<td bgcolor = 'RED'>" + response[i].EE + "</td>");
+            }else if(response[i].EE == "NEG"){
+                $('#31').append("<td>" + response[i].EE + "</td>");
+            }
+
+            $('#32').append("<td>" + response[i].FF + "</td>");
+
+            $('#33').append("<td>" + response[i].GG + "</td>");
+
+            if(response[i].HH > 100 || response[i].HH < 50){
+                $('#34').append("<td bgcolor = 'RED'>" + response[i].HH + "</td>");
+            }else if(response[i].HH <= 100 &&  response[i].HH >= 50){
+                $('#34').append("<td>" + response[i].HH + "</td>");
+            }
+
+            if(response[i].II < 60){
+                $('#35').append("<td bgcolor = 'RED'>" + response[i].II + "</td>");
+            }else if(response[i].HH >= 60){
+                $('#35').append("<td>" + response[i].II + "</td>");
+            }
+
+            if(response[i].JJ > 5.19){
+                $('#36').append("<td bgcolor = 'RED'>" + response[i].JJ + "</td>");
+            }else if(response[i].JJ <= 5.19){
+                $('#36').append("<td>" + response[i].JJ + "</td>");
+            }
+
+            if(response[i].KK  > 1.69){
+                $('#37').append("<td bgcolor = 'RED'>" + response[i].KK + "</td>");
+            }else if(response[i].KK<= 1.69){
+                $('#37').append("<td>" + response[i].KK + "</td>");
+            }
+
+
+            if(response[i].LL  < 1.3){
+                $('#38').append("<td bgcolor = 'RED'>" + response[i].LL + "</td>");
+            }else if(response[i].LL >= 1.3){
+                $('#38').append("<td>" + response[i].LL + "</td>");
+            }
+
+            $('#39').append("<td>" + response[i].MM + "</td>");
+
+
+            $('#40').append("<td>" + response[i].NN + "</td>");
+
+            $('#41').append("<td>" + response[i].OO + "</td>");
+
+            if(response[i].PP > 4.29){
+                $('#42').append("<td bgcolor = 'RED'>" + response[i].PP + "</td>");
+            }else if(response[i].PP <= 4.29){
+                $('#42').append("<td>" + response[i].PP + "</td>");
+            }
+        });
+
+
+        function line (A, B, C, D, E, F, G) {
+           // $("this").css('border', '3px solid black');
+
+            var chart = new CanvasJS.Chart("chartContainer",
+                    {
+
+                        title:{
+                            text: G,
+                            fontSize: 30
+                        },
+                        animationEnabled: true,
+                        axisX:{
+
+                            gridColor: "black",
+                            tickColor: "black",
+                            valueFormatString: "DD/MM/YYYY",
+                            interval:1,
+                            intervalType: "month"
+                        },
+                        toolTip:{
+                            shared:true
+                        },
+                        theme: "theme2",
+                        axisY: {
+                            gridColor: "green",
+                            tickColor: "blue"
+                        },
+                        legend:{
+                            verticalAlign: "center",
+                            horizontalAlign: "right"
+                        },
+                        data: [
+                            {
+                                type: "line",
+                                showInLegend: true,
+                                name: G,
+                                color: "blue",
+                                lineThickness: 3,
+
+                                dataPoints: [
+                                    { x: new Date(2010,0,5), y: A, markerColor: D },
+                                    { x: new Date(2010,1,6), y: B, markerColor: E },
+                                    { x: new Date(2010,2,9), y: C, markerColor: F }
+                                ]
+                            }
+
+
+                        ],
+                        legend:{
+                            cursor:"pointer",
+                            itemclick:function(e){
+                                if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                                    e.dataSeries.visible = false;
+                                }
+                                else{
+                                    e.dataSeries.visible = true;
+                                }
+                                chart.render();
+                            }
+                        }
+                    });
+
+            chart.render();
+        }
+
+        function Highlight() {
+
+        }
+/*
+        function line() {
+            var chart = new CanvasJS.Chart("chartContainer",
+                    {
+                        theme: "theme2",
+                        title:{
+                            text: "Earthquakes - per month"
+                        },
+                        animationEnabled: true,
+                        axisX: {
+                            valueFormatString: "DD/MM/YYYY",
+                            interval:1,
+                            intervalType: "month"
+
+                        },
+                        axisY:{
+                            includeZero: false
+
+                        },
+                        data: [
+                            {
+                                type: "line",
+                                //lineThickness: 3,
+                                dataPoints: [
+                                    { x: new Date(2012, 00, 1), y: 450 },
+
+                                    { x: new Date(2012, 02, 1), y: 520, indexLabel: "highest",markerColor: "red", markerType: "triangle"},
+                                    { x: new Date(2012, 03, 1), y: 460 },
+
+                                    { x: new Date(2012, 08, 1), y: 410 , indexLabel: "lowest",markerColor: "DarkSlateGrey", markerType: "cross"},
+                                    { x: new Date(2012, 09, 1), y: 500 }
+
+
+                                ]
+                            }
+
+
+                        ]
+                    });
+
+            chart.render();
+        }
+*/
+
+    </script>
+
+</body>
+</html>

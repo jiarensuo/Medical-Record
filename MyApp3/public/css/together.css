@@ -1,0 +1,19 @@
+body{text-align: center;}
+
+canvas,img { display:block; margin:1em auto; border:0px solid black; }
+
+#container{
+    display:inline-block;
+    width:700px;
+    height:958px;
+    margin: 0 auto;
+    background: black;
+    position:relative;
+    border:5px solid black;
+    border-radius: 10px;
+    box-shadow: 0 5px 50px #333}
+
+#myCanvas{
+    position:relative;
+    z-index:20;
+}

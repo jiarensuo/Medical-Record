@@ -1,0 +1,732 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Personal Health History Record</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="/javascripts/timeline.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://almende.github.io/chap-links-library/js/timeline/timeline.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script type="text/javascript" src="/javascripts/bootstrap.min.js"></script>
+    <style>
+        body {
+            font-family: verdana, sans, arial;
+            font-size: 10pt;
+        }
+        div.timeline-navigation-delete {
+            background: url('') no-repeat center;
+        }
+        div.timeline-event-range {
+
+        }
+        div.timeline-event-selected {
+            border-color: orange;
+            background-color: yellow;
+        }
+    </style>
+    <script type="text/javascript">
+        /* highlight each selected icon*/
+        function changeCSS(ID) {
+            for(var i = 1; i < 18; i++) {
+                if (i != ID) {
+                    $("#" + i).css('opacity', '0.3');
+                }
+            }
+        }
+
+        window.onload=function() {
+            var currentLocation = window.location.toString();
+            if(currentLocation.indexOf("Skeleton") > 0){
+                changeCSS(2)
+            } else if(currentLocation.indexOf("Muscular") > 0){
+                changeCSS(3);
+            } else if(currentLocation.indexOf("Cardiovascular") > 0){
+                changeCSS(4);
+            } else if(currentLocation.indexOf("Digestive") > 0){
+                changeCSS(5);
+            } else if(currentLocation.indexOf("Nervous") > 0){
+                changeCSS(6)
+            } else if(currentLocation.indexOf("Immune") > 0){
+                changeCSS(7);
+            } else if(currentLocation.indexOf("Respiratory") > 0) {
+                changeCSS(8);
+            } else if(currentLocation.indexOf("Reproductive") > 0) {
+                changeCSS(9);
+            } else if(currentLocation.indexOf("Urinary") > 0){
+                changeCSS(10);
+            } else if(currentLocation.indexOf("Endocrine") > 0) {
+                changeCSS(11);
+            } else if(currentLocation.indexOf("Skin") > 0) {
+                changeCSS(12);
+            }else if(currentLocation.indexOf("diagnosis") > 0){
+                changeCSS(13);
+            } else if(currentLocation.indexOf("treatment") > 0) {
+                changeCSS(14);
+            } else if(currentLocation.indexOf("medication") > 0) {
+                changeCSS(15);
+            } else if(currentLocation.indexOf("scanning") > 0){
+                changeCSS(16);
+            } else if(currentLocation.indexOf("bloodtest") > 0) {
+                changeCSS(17);
+            } else {
+                changeCSS(1);
+             }
+        }
+        /******************************************************************************************************/
+        google.load("visualization", "1");
+
+        // Set callback to run when API is loaded
+        google.setOnLoadCallback(drawVisualization);
+
+        var timeline;
+        var vis2;
+        var data1;
+        var data2;
+
+        function getSelectedRow() {
+            var row = undefined;
+            var sel = timeline.getSelection();
+            if (sel.length) {
+                if (sel[0].row != undefined) {
+                    row = sel[0].row;
+                }
+            }
+            return row;
+        }
+
+        // Called when the Visualization API is loaded.
+        function createTimeline1() {
+            // Create and populate a data table.
+            data1 = new google.visualization.DataTable();
+            data1.addColumn('datetime', 'start');
+            data1.addColumn('datetime', 'end');
+            data1.addColumn('string', 'content');
+            var dataArray = [];
+            <% allData.forEach(function(item) {%>
+            console.log("items : " + "<%= item.contenttype%>" + ", <%= item.id%>");
+            if("<%=item.disease_type%>"=='Skeleton'){
+                if("<%= item.contenttype%>" == 'medication'){
+                    dataArray.push([new Date(<%= item.starttime%>),new Date(<%= item.endtime %>),'<div style="text-align:center;">Please taking medicaine for these days,click icon to see details <div><img src="<%= item.content %>" onclick="testdiv(\'<%= item.contenttype %>\', <%= item.id %>)" style="border:5px solid; border-color: red; width:64px;  height:64px;"></div></div>']);
+                }else
+                {
+                    dataArray.push([new Date(<%= item.starttime %>), , '<img src="<%= item.content %>" onclick="testdiv(\'<%= item.contenttype %>\', <%= item.id %>)" style="border:5px solid; border-color: red; width:64px; height:64px;">']);
+                }
+            }
+            if("<%=item.disease_type%>"=='Muscular'){
+                if("<%= item.contenttype%>" == 'medication'){dataArray.push([new Date(<%= item.starttime%>),new Date(<%= item.endtime%>),'<div style="text-align:center;">Please taking medicaine for these days,click icon to see details <div><img src="<%= item.content %>" onclick="testdiv(\'<%= item.contenttype %>\', <%= item.id %>)" style="border:5px solid; border-color: blue; width:64px; height:64px;"></div></div>']);
+                }else
+                { dataArray.push([new Date(<%= item.starttime%>),,'<img src="<%= item.content %>" onclick="testdiv(\'<%= item.contenttype %>\', <%= item.id %>)" style="border:5px solid; border-color: blue; width:64px; height:64px;">']);}
+
+            }
+            if("<%=item.disease_type%>"=='Cardiovascular'){
+                if("<%= item.contenttype%>" == 'medication'){   dataArray.push([new Date(<%= item.starttime%>),new Date(<%= item.endtime%>),'<div style="text-align:center;">Please taking medicaine for these days,click icon to see details <div><img src="<%= item.content %>" onclick="testdiv(\'<%= item.contenttype %>\', <%= item.id %>)" style="border:5px solid; border-color: yellow; width:64px; height:64px;"></div></div>']);
+                }else{
+                    dataArray.push([new Date(<%= item.starttime%>),,'<img src="<%= item.content %>" onclick="testdiv(\'<%= item.contenttype %>\', <%= item.id %>)" style="border:5px solid; border-color: yellow; width:64px; height:64px;">']);}
+
+            }
+            if("<%=item.disease_type%>"=='Digestive'){
+                if("<%= item.contenttype%>" == 'medication'){dataArray.push([new Date(<%= item.starttime%>),new Date(<%= item.endtime%>),'<div style="text-align:center;">Please taking medicaine for these days,click icon to see details <div><img src="<%= item.content %>" onclick="testdiv(\'<%= item.contenttype %>\', <%= item.id %>)" style="border:5px solid; border-color: green; width:64px; height:64px;"></div></div>']);
+                }else{
+                    dataArray.push([new Date(<%= item.starttime%>),,'<img src="<%= item.content %>" onclick="testdiv(\'<%= item.contenttype %>\', <%= item.id %>)" style="border:5px solid; border-color: green; width:64px; height:64px;">']);}
+
+            }
+            if("<%=item.disease_type%>"=='Nervous'){
+                if("<%= item.contenttype%>" == 'medication'){ dataArray.push([new Date(<%= item.starttime%>),new Date(<%= item.endtime%>),'<div style="text-align:center;">Please taking medicaine for these days,click icon to see details <div><img src="<%= item.content %>" onclick="testdiv(\'<%= item.contenttype %>\', <%= item.id %>)" style="border:5px solid; border-color:DeepPink; width:64px; height:64px;"></div></div>']);
+                }else{
+                    dataArray.push([new Date(<%= item.starttime%>),,'<img src="<%= item.content %>" onclick="testdiv(\'<%= item.contenttype %>\', <%= item.id %>)" style="border:5px solid; border-color:DeepPink; width:64px; height:64px;">']);}
+
+            }
+            if("<%=item.disease_type%>"=='Immune'){
+                if("<%= item.contenttype%>" == 'medication'){ dataArray.push([new Date(<%= item.starttime%>),new Date(<%= item.endtime%>),'<div style="text-align:center;">Please taking medicaine for these days,click icon to see details <div><img src="<%= item.content %>" onclick="testdiv(\'<%= item.contenttype %>\', <%= item.id %>)" style="border:5px solid; border-color:#fa6900; width:64px; height:64px;"></div></div>']);
+                }else{
+                    dataArray.push([new Date(<%= item.starttime%>),,'<img src="<%= item.content %>" onclick="testdiv(\'<%= item.contenttype %>\', <%= item.id %>)" style="border:5px solid; border-color:#fa6900; width:64px; height:64px;">']);}
+
+            }
+            if("<%=item.disease_type%>"=='Respiratory'){
+                if("<%= item.contenttype%>" == 'medication'){dataArray.push([new Date(<%= item.starttime%>),new Date(<%= item.endtime%>),'<div style="text-align:center;">Please taking medicaine for these days,click icon to see details <div><img src="<%= item.content %>" onclick="testdiv(\'<%= item.contenttype %>\', <%= item.id %>)" style="border:5px solid; border-color:#00B7FF; width:64px; height:64px;"></div></div>']);
+                }else{
+                    dataArray.push([new Date(<%= item.starttime%>),,'<img src="<%= item.content %>" onclick="testdiv(\'<%= item.contenttype %>\', <%= item.id %>)" style="border:5px solid; border-color:#00B7FF; width:64px; height:64px;">']);}
+
+            }
+            if("<%=item.disease_type%>"=='Reproductive'){
+                if("<%= item.contenttype%>" == 'medication'){dataArray.push([new Date(<%= item.starttime%>),new Date(<%= item.endtime%>),'<div style="text-align:center;">Please taking medicaine for these days,click icon to see details <div><img src="<%= item.content %>" onclick="testdiv(\'<%= item.contenttype %>\', <%= item.id %>)" style="border:5px solid; border-color:#ff7f6e; width:64px; height:64px;"></div></div>']);
+                }else{
+                    dataArray.push([new Date(<%= item.starttime%>),,'<img src="<%= item.content %>" onclick="testdiv(\'<%= item.contenttype %>\', <%= item.id %>)" style="border:5px solid; border-color:#ff7f6e; width:64px; height:64px;">']);}
+
+            }
+            if("<%=item.disease_type%>"=='Urinary'){
+                if("<%= item.contenttype%>" == 'medication'){ dataArray.push([new Date(<%= item.starttime%>),new Date(<%= item.endtime%>),'<div style="text-align:center;">Please taking medicaine for these days,click icon to see details <div><img src="<%= item.content %>" onclick="testdiv(\'<%= item.contenttype %>\', <%= item.id %>)" style="border:5px solid; border-color:#6e94ff; width:64px; height:64px;"></div></div>']);
+                }else{
+                    dataArray.push([new Date(<%= item.starttime%>),,'<img src="<%= item.content %>" onclick="testdiv(\'<%= item.contenttype %>\', <%= item.id %>)" style="border:5px solid; border-color:#6e94ff; width:64px; height:64px;">']);}
+
+            }
+            if("<%=item.disease_type%>"=='Endocrine'){
+                if("<%= item.contenttype%>" == 'medication'){dataArray.push([new Date(<%= item.starttime%>),new Date(<%= item.endtime%>),'<div style="text-align:center;">Please taking medicaine for these days,click icon to see details <div><img src="<%= item.content %>" onclick="testdiv(\'<%= item.contenttype %>\', <%= item.id %>)" style="border:5px solid; border-color:#ffc200; width:64px; height:64px;"></div></div>']);
+                }else{
+                    dataArray.push([new Date(<%= item.starttime%>),,'<img src="<%= item.content %>" onclick="testdiv(\'<%= item.contenttype %>\', <%= item.id %>)" style="border:5px solid; border-color:#ffc200; width:64px; height:64px;">']);}
+
+            }
+            if("<%=item.disease_type%>"=='Skin'){
+                if("<%= item.contenttype%>" == 'medication'){dataArray.push([new Date(<%= item.starttime%>),new Date(<%= item.endtime%>),'<div style="text-align:center;">Please taking medicaine for these days,click icon to see details <div><img src="<%= item.content %>" onclick="testdiv(\'<%= item.contenttype %>\', <%= item.id %>)" style="border:5px solid; border-color:#00ffd2; width:64px; height:64px;"></div></div>']);
+                }else{
+                    dataArray.push([new Date(<%= item.starttime%>),,'<img src="<%= item.content %>" onclick="testdiv(\'<%= item.contenttype %>\', <%= item.id %>)" style="border:5px solid; border-color:#00ffd2; width:64px; height:64px;">']);}
+
+            }
+            <% }) %>
+            data1.addRows(dataArray);
+            // specify options
+            var options1 = {
+                width:  "100%",
+                //height: "600px",
+                height: "400px",
+                min: new Date(2013,0,1),
+                max: new Date(2018,0,1),
+                editable: true,   // enable dragging and editing items
+                //axisOnTop: true,
+                style: "box"
+            };
+
+            // Instantiate our timeline object.
+            timeline = new links.Timeline(document.getElementById('mytimeline'), options1);
+
+            // Add event listeners
+
+            google.visualization.events.addListener(timeline, 'select', onselect);
+            google.visualization.events.addListener(timeline, 'change', onchange);
+            google.visualization.events.addListener(timeline, 'add', onadd);
+           google.visualization.events.addListener(timeline, 'edit', onedit);
+           google.visualization.events.addListener(timeline, 'delete', ondelete);
+            google.visualization.events.addListener(timeline, 'rangechange', onrangechange1);
+             //google.visualization.events.addListener(timeline, 'rangechanged', onrangechanged);
+
+            // Draw our timeline with the created data and options
+            timeline.draw(data1);
+        }
+
+        function createTimeline2() {
+            // Create and populate a data table.
+            data2 = new google.visualization.DataTable();
+            data2.addColumn('datetime', 'start');
+            data2.addColumn('datetime', 'end');
+            data2.addColumn('string', 'content');
+            var dataArray2 =[];
+
+            <% allData2.forEach(function(item) {%>
+            console.log("sss : " + "<%= item.s_start_time%>" + ", <%= item.s_healing_time%>");
+            dataArray2.push([new Date(<%= item.s_start_time%>),new Date(<%= item.s_healing_time%>),'<div style="text-align:center;">My illness: <%= item.symptom%> has healed</div>']);
+
+            <% }) %>
+
+            data2.addRows(dataArray2);
+            // specify options
+            var options2 = {
+                width:  "100%",
+                height: "230px",
+                min: new Date(2013,0,1),
+                max: new Date(2018,0,1),
+                editable: true,   // enable dragging and editing items
+                //axisOnTop: true,
+                style: "box"
+            };
+            // Instantiate our timeline object.
+            vis2 = new links.Timeline(document.getElementById('mytimeline2'), options2);
+
+            // Add event listeners
+
+            // google.visualization.events.addListener(timeline, 'select', onselect);
+            // google.visualization.events.addListener(timeline, 'change', onchange);
+            // google.visualization.events.addListener(timeline, 'add', onadd);
+            // google.visualization.events.addListener(timeline, 'edit', onedit);
+            //google.visualization.events.addListener(timeline, 'delete', ondelete);
+            google.visualization.events.addListener(vis2, 'rangechange', onrangechange2);
+            google.visualization.events.addListener(timeline, 'rangechanged', onrangechanged);
+
+            // Draw our timeline with the created data and options
+            vis2.draw(data2);
+            onrangechange1();
+        }
+
+
+        function drawVisualization(){
+            createTimeline1();
+            createTimeline2();
+        }
+
+        // Make a callback function for the select item
+        var onselect = function (event) {
+            var row = getSelectedRow();
+
+            if (row != undefined) {
+                document.getElementById("info").innerHTML += "item " + row + " selected<br>";
+                // Note: you can retrieve the contents of the selected row with
+                //       data.getValue(row, 2);
+            }
+            else {
+                document.getElementById("info").innerHTML += "no item selected<br>";
+            }
+        };
+
+        // callback function for the change item
+        var onchange = function () {
+            var row = getSelectedRow();
+            document.getElementById("info").innerHTML += "item " + row + " changed<br>";
+        };
+
+        // callback function for the delete item
+        var ondelete = function () {
+            var row = getSelectedRow();
+            document.getElementById("info").innerHTML += "item " + row + " deleted<br>";
+        };
+
+        // callback function for the edit item
+        var onedit = function () {
+            var row = getSelectedRow();
+            document.getElementById("info").innerHTML += "item " + row + " edit<br>";
+            var content = data.getValue(row, 2);
+            var newContent = prompt("Enter content", content);
+            if (newContent != undefined) {
+                data.setValue(row, 2, newContent);
+            }
+            timeline.redraw();
+        };
+
+        //callback function for the add item
+        var onadd = function () {
+            var row = getSelectedRow();
+            document.getElementById("info").innerHTML += "item " + row + " created<br>";
+            var content = data.getValue(row, 2);
+            var newContent = prompt("Enter content", content);
+            if (newContent != undefined) {
+                data.setValue(row, 2, newContent);
+                timeline.redraw();
+            }
+            else {
+                // cancel adding the item
+                timeline.cancelAdd();
+            }
+        };
+
+        function onrangechange1() {
+            // adjust the values of startDate and endDate
+            var range = timeline.getVisibleChartRange();
+            document.getElementById('startDate').value = dateFormat(range.start);
+            document.getElementById('endDate').value   = dateFormat(range.end);
+            vis2.setVisibleChartRange(range.start,range.end);
+
+
+
+
+        }
+
+        function onrangechanged() {
+            document.getElementById("info").innerHTML += "range changed<br>";
+        }
+
+        /******************************************************************/
+        function onrangechange2() {
+            // adjust the values of startDate and endDate
+            var range = vis2.getVisibleChartRange();
+            document.getElementById('startDate').value = dateFormat(range.start);
+            document.getElementById('endDate').value   = dateFormat(range.end);
+            timeline.setVisibleChartRange(range.start,range.end);
+
+        }
+
+
+
+        // adjust start and end time.
+        function setTime() {
+            if (!timeline) return;
+
+            var newStartDate = new Date(document.getElementById('startDate').value);
+            var newEndDate   = new Date(document.getElementById('endDate').value);
+            timeline.setVisibleChartRange(newStartDate, newEndDate);
+        }
+
+        // set the visible range to the current time
+        function setCurrentTime() {
+            if (!timeline) return;
+
+            timeline.setVisibleChartRangeNow();
+            vis2.setVisibleChartRangeNow();
+
+        }
+
+        // Format given date as "yyyy-mm-dd hh:ii:ss"
+        // @param datetime   A Date object.
+        function dateFormat(date) {
+            var datetime =   date.getFullYear() + "-" +
+                    ((date.getMonth()   <  9) ? "0" : "") + (date.getMonth() + 1) + "-" +
+                    ((date.getDate()    < 10) ? "0" : "") +  date.getDate() + " " +
+                    ((date.getHours()   < 10) ? "0" : "") +  date.getHours() + ":" +
+                    ((date.getMinutes() < 10) ? "0" : "") +  date.getMinutes() + ":" +
+                    ((date.getSeconds() < 10) ? "0" : "") +  date.getSeconds();
+            return datetime;
+        }
+        /* function testdiv is for click the icon, then pop up a box*/
+        function testdiv(contenttype,id){
+            var link = "/specific/type=" + contenttype + "/position=" + id;
+            $.get(link, function(data,status){
+                if(data.Type == "diagnosis"){
+                    //document.getElementById("detail").style.display = "none";
+                    //document.getElementById("show").style.backgroundColor = "#00CC33";
+                    //document.getElementById("show").innerHTML = "<strong>Patient_id :</strong>" + data.Patient_id + "<br>" + "<strong>Position_id :</strong>" + data.Position_id+ "<br>" + "<strong>ICD_id :</strong>" + data.ICD_id+ "<br>" + "<strong>Severity :</strong>" + data.Severity+ "<br>" + "<strong>Clinical_note :</strong>" + data.Clinical_note;
+                    var tempHtml = "<div><table class='table' style = 'background-color: chartreu'><tbody>" +
+                            "<tr class='success'><td>Patient_id</td><td>"+ data.Patient_id+"</td></tr>" +
+                            "<tr class='success'><td>Position_id</td><td>"+ data.Position_id+"</td></tr>" +
+                            "<tr class='success'><td>ICD_id</td><td>"+ data.ICD_id+"</td></tr>" +
+                            "<tr class='success'><td>Severity</td><td>"+ data.Severity+"</td></tr>" +
+                            "<tr class='success'><td>Clinical_note</td><td>"+ data.Clinical_note+"</td></tr>" +
+
+                            "</tbody></table></div>";
+                    $('#myModal').find("#modalHeader").html("Diagnosis").end().find("#modalBody").html(tempHtml).end().modal('toggle');
+                }
+                if(data.Type == "treatment"){
+                    //document.getElementById("detail").style.display = "none";
+                    //document.getElementById("show").style.backgroundColor = "blue";
+                    //document.getElementById("show").innerHTML = "<strong>Patient_id :</strong>" + data.Patient_id + "<br>" + "<strong>Position_id :</strong>" + data.Position_id+ "<br>" + "<strong>Treatment Name :</strong>" + data.Treatment_name + "<br>" + "<strong>Clinical_note :</strong>" + data.Clinical_note;
+                    var tempHtml = "<div><table class='table'><tbody>" +
+                            "<tr class='success'><td>Patient_id</td><td>"+ data.Patient_id+"</td></tr>" +
+                            "<tr class='success'><td>Position_id</td><td>"+ data.Position_id+"</td></tr>" +
+                            "<tr class='success'><td>Treatment Name</td><td>"+ data.Treatment_name+"</td></tr>" +
+                            "<tr class='success'><td>Clinical_note</td><td>"+ data.Clinical_note+"</td></tr>" +
+
+                            "</tbody></table></div>";
+                    $('#myModal').find("#modalHeader").html("Treatment").end().find("#modalBody").html(tempHtml).end().modal('toggle');
+                }
+                if(data.Type == "medication"){
+                    //document.getElementById("detail").style.display = "none";
+                    //document.getElementById("show").style.backgroundColor = "orange";
+                    //document.getElementById("show").innerHTML = "<strong>Patient_id :</strong>" + data.Patient_id + "<br>" + "<strong>Position_id :</strong>" + data.Position_id+ "<br>" + "<strong>Medication Name :</strong>" + data.Medication_name+ "<br>" + "<strong>Dosage :</strong>" + data.Dosage+ "<br>" + "<strong>Frequency :</strong>" + data.Frequency+ "<br>" + "<strong>Clinical_note :</strong>" + data.Clinical_note;
+                    var tempHtml = "<div><table class='table'><tbody>" +
+                            "<tr class='success'><td>Patient_id</td><td>"+ data.Patient_id+"</td></tr>" +
+                            "<tr class='success'><td>Position_id</td><td>"+ data.Position_id+"</td></tr>" +
+                            "<tr class='success'><td>Medication Name</td><td>"+ data.Medication_name+"</td></tr>" +
+                            "<tr class='success'><td>Dosage</td><td>"+ data.Dosage+"</td></tr>" +
+                            "<tr class='success'><td>Frequency</td><td>"+ data.Frequency+"</td></tr>" +
+                            "<tr class='success'><td>Clinical_note</td><td>"+ data.Clinical_note+"</td></tr>" +
+
+                            "</tbody></table></div>";
+                    $('#myModal').find("#modalHeader").html("Medication").end().find("#modalBody").html(tempHtml).end().modal('toggle');
+                }
+                if(data.Type == "bloodtest"){
+                    window.open("http://127.0.0.1:3000/bloodtest","_self");
+                    /*
+                     document.getElementById("detail").style.display = "none";
+                     document.getElementById("show").style.backgroundColor = "red";
+                     document.getElementById("show").innerHTML = "<strong>Patient_id :</strong>" + data.Patient_id + "<br>" + "<strong>Clinical_note :</strong>" + data.Clinical_note;
+                     */
+                }
+                if(data.Type == "scanning"){
+                    //document.getElementById("detail").style.display = "none";
+                    //document.getElementById("detail").style.display = "block";
+                    //document.getElementById("show").style.backgroundColor = "#00BFFF";
+                    //document.getElementById("show").innerHTML = "<strong>Patient_id :</strong>" + data.Patient_id + "<br>" + "<strong>Position_id :</strong>" + data.Position_id+ "<br>"+ "<strong>Clinical_note :</strong>" + data.Clinical_note;
+                    //document.getElementById("scanning").src= data.Image_Url;
+                    //var tempHtml = "<strong>Patient_id :</strong>" + data.Patient_id + "<br>" + "<strong>Position_id :</strong>" + data.Position_id+ "<br>"+ "<strong>Clinical_note :</strong>" + data.Clinical_note;
+                    var tempHtml = "<div><table class='table'><tbody>" +
+                            "<tr class='success'><td>Patient_id</td><td>"+ data.Patient_id+"</td></tr>" +
+                            "<tr class='success'><td>Position_id</td><td>"+ data.Position_id+"</td></tr>" +
+                            "<tr class='success'><td>Clinical_note</td><td>"+ data.Clinical_note+"</td></tr>" +
+                            "</tbody></table></div>";
+                    tempHtml+= "<div><p>Scanning Image: </p><br><img src='" + data.Image_Url + "' style='width:500px'/></div>";
+                    $('#myModal').find("#modalHeader").html("Scanning").end().find("#modalBody").html(tempHtml).end().modal('toggle');
+                }
+            });
+        }
+
+        function displayAllHistory(){
+            window.open("http://127.0.0.1:3000/PHR/history/type=all/position=0","_self");
+        }
+
+        function displaySkeletalHistory(){
+            window.open("http://127.0.0.1:3000/PHR/history/type=all/position=Skeleton","_self");
+        }
+
+        function displayMuscularHistory(){
+            window.open("http://127.0.0.1:3000/PHR/history/type=all/position=Muscular","_self");
+        }
+
+        function displayCardiovascularHistory(){
+            window.open("http://127.0.0.1:3000/PHR/history/type=all/position=Cardiovascular","_self");
+        }
+
+        function displayDigestiveHistory(){
+            window.open("http://127.0.0.1:3000/PHR/history/type=all/position=Digestive","_self");
+        }
+
+        function displayNervousHistory(){
+            window.open("http://127.0.0.1:3000/PHR/history/type=all/position=Nervous","_self");
+        }
+
+        function displayImmuneHistory(){
+            window.open("http://127.0.0.1:3000/PHR/history/type=all/position=Immune","_self");
+        }
+
+        function displayRespiratoryHistory(){
+            window.open("http://127.0.0.1:3000/PHR/history/type=all/position=Respiratory","_self");
+        }
+
+        function displayReproductiveHistory(){
+            window.open("http://127.0.0.1:3000/PHR/history/type=all/position=Reproductive","_self");
+        }
+
+        function displayUrinaryHistory(){
+            window.open("http://127.0.0.1:3000/PHR/history/type=all/position=Urinary","_self");
+        }
+
+        function displayEndocrineHistory(){
+            window.open("http://127.0.0.1:3000/PHR/history/type=all/position=Endocrine","_self");
+        }
+
+        function displaySkinHistory(){
+            window.open("http://127.0.0.1:3000/PHR/history/type=all/position=Skin","_self");
+        }
+
+
+        function displayAllDiagnosis() {
+            window.open("http://127.0.0.1:3000/PHR/history/type=diagnosis/position=0","_self");
+        }
+
+        function displayAllTreatment() {
+            window.open("http://127.0.0.1:3000/PHR/history/type=treatment/position=0","_self");
+        }
+
+        function displayAllMedication() {
+            window.open("http://127.0.0.1:3000/PHR/history/type=medication/position=0","_self");
+        }
+
+        function displayAllScanning() {
+            window.open("http://127.0.0.1:3000/PHR/history/type=scanning/position=0","_self");
+        }
+        function displayAllBloodTest() {
+            window.open("http://127.0.0.1:3000/PHR/history/type=bloodtest/position=0","_self");
+        }
+        function displayBack() {
+            window.open("http://127.0.0.1:3000/PHR/PHR","_self");
+        }
+    </script>
+</head>
+
+<body>
+<div class="container-fluid">
+    <!--display icon in the top  -->
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="row">
+                <div class="col-sm-1 text-center" id="1">
+                    <div class = "row">
+                        <br><button type="button" class="btn btn-success" onclick="displayAllHistory()" style="background-color:white; color:black;">All</button>
+                    </div>
+                    <div class = "row">
+                        <br><img src="/images/Female_together.png" style=" border:solid; border-color:black; width:50px; height:100px;" onclick="displayAllHistory();">
+                    </div>
+                </div>
+                <div class="col-sm-1 text-center" id="2">
+                    <div class = "row">
+                        <br><button type="button" class="btn btn-success" onclick="displaySkeletalHistory()" style="background-color:#FF0033;">Ske</button>
+                    </div>
+                    <div class = "row">
+                        <br><img src="/images/Male_Skeleton.png" style=" border:solid; border-color:red; width:50px; height:100px;" onclick="displaySkeletalHistory();">
+                    </div>
+                </div>
+                <div class="col-sm-1 text-center" id="3">
+                    <div class = "row">
+                        <br><button type="button" class="btn btn-success" onclick="displayMuscularHistory()" style="background-color:#6666FF;">Mus</button>
+                    </div>
+                    <div class = "row">
+                        <br><img src="/images/Male_Muscular.png" style=" border:solid; border-color:blue; width:50px; height:100px;" onclick="displayMuscularHistory();">
+                    </div>
+                </div>
+                <div class="col-sm-1 text-center" id="4">
+                    <div class = "row">
+                        <br><button type="button" class="btn btn-success" onclick="displayCardiovascularHistory()" style="background-color:#CCFF33;">Car</button>
+                    </div>
+                    <div class = "row">
+                        <br><img src="/images/Male_Cardiovascular.png" style=" border:solid; border-color:yellow; width:50px; height:100px;" onclick="displayCardiovascularHistory();">
+                    </div>
+                </div>
+                <div class="col-sm-1 text-center" id="5">
+                    <div class = "row">
+                        <br><button type="button" class="btn btn-success" onclick="displayDigestiveHistory()" style="background-color:#00CC33;">Dig</button>
+                    </div>
+                    <div class = "row">
+                        <br><img src="/images/Male_Digestive.png" style=" border:solid; border-color:green; width:50px; height:100px;" onclick="displayDigestiveHistory()">
+                    </div>
+                </div>
+                <div class="col-sm-1 text-center" id="6">
+                    <div class = "row">
+                        <br><button type="button" class="btn btn-success" onclick="displayNervousHistory()" style="background-color:#FF66FF;">Ner</button>
+                    </div>
+                    <div class = "row">
+                        <br><img src="/images/Male_Nervous.png" style=" border:solid; border-color:deeppink; width:50px; height:100px;" onclick="displayNervousHistory()">
+                    </div>
+                </div>
+                <div class="col-sm-1 text-center" id="7">
+                    <div class = "row">
+                        <br><button type="button" class="btn btn-success" style="background-color:#fa6900;color:white;border-color:#fa6900" onclick="displayImmuneHistory()">Imm</button>
+                    </div>
+                    <div class = "row">
+                        <br><img src="/images/Male_Immune.png" style=" border:solid; border-color:#fa6900; width:50px; height:100px;" onclick="displayImmuneHistory()">
+                    </div>
+                </div>
+                <div class="col-sm-1 text-center" id="8">
+                    <div class = "row">
+                        <br><button type="button" class="btn btn-primary" style="background-color:#00B7FF;color:white;border-color:#00B7FF" onclick="displayRespiratoryHistory()">Res</button>
+                    </div>
+                    <div class = "row">
+                        <br><img src="/images/Male_Respiratory.png" style=" border:solid; border-color:#00B7FF; width:50px; height:100px;" onclick="displayRespiratoryHistory()">
+                    </div>
+                </div>
+                <div class="col-sm-1 text-center" id="9">
+                    <div class = "row">
+                        <br><button type="button" class="btn btn-warning" style="background-color: #ff7f6e;color:white;border-color:#ff7f6e" onclick="displayReproductiveHistory()"> Rep</button>
+                    </div>
+                    <div class = "row">
+                        <br><img src="/images/Male_Reproductive.png" style=" border:solid; border-color:#ff7f6e; width:50px; height:100px;" onclick="displayReproductiveHistory()">
+                    </div>
+                </div>
+                <div class="col-sm-1 text-center" id="10">
+                    <div class = "row">
+                        <br><button type="button" class="btn btn-info" style="background-color: #6e94ff;color:white;border-color:#6e94ff" onclick = "displayUrinaryHistory()">Uri</button>
+                    </div>
+                    <div class = "row">
+                        <br><img src="/images/Male_Urinary.png" style=" border:solid; border-color:#6e94ff; width:50px; height:100px;" onclick="displayUrinaryHistory()">
+                    </div>
+                </div>
+                <div class="col-sm-1 text-center" id="11">
+                    <div class = "row">
+                        <br><button type="button" class="btn btn-danger" style="background-color: #ffc200;color:white;border-color:#ffc200" onclick = "displayEndocrineHistory()">Endo</button>
+                    </div>
+                    <div class = "row">
+                        <br><img src="/images/Male_Endocrine.png" style=" border:solid; border-color:#ffc200; width:50px; height:100px;" onclick="displayEndocrineHistory()">
+                    </div>
+                </div>
+                <div class="col-sm-1 text-center" id="12">
+                    <div class = "row">
+                        <br><button type="button" class="btn btn-danger" style="background-color: #00ffd2;color:white;border-color: #00ffd2;" onclick = "displaySkinHistory()">Skin</button>
+                    </div>
+                    <div class = "row">
+                        <br><img src="/images/Female_Skin.png" style=" border:solid; border-color:#00ffd2; width:50px; height:100px;" onclick="displaySkinHistory()">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="col-sm-2 text-center" id="13">
+                    <div class = "row">
+                        <br><button type="button" class="btn btn-success" style="background-color: white;color:black;border-color:black" onclick="displayAllDiagnosis()">Diag</button>
+                    </div>
+                    <div class = "row">
+                        <br><img src="/images/diagnosis.jpg" style=" border:solid; border-color:black; width:64px; height:64px;" onclick="displayAllDiagnosis();">
+                    </div>
+            </div>
+            <div class="col-sm-2 text-center" id="14">
+                    <div class = "row">
+                        <br><button type="button" class="btn btn-primary" style="background-color: white;color:black;border-color:black" onclick="displayAllTreatment()">Treat</button>
+                    </div>
+                    <div class = "row">
+                        <br><img src="/images/treatment.jpg" style="border:solid; border-color:black; width:64px; height:64px;" onclick="displayAllTreatment()">
+                    </div>
+            </div>
+            <div class="col-sm-2 text-center" id="15">
+                    <div class = "row">
+                        <br><button type="button" class="btn btn-warning" style="background-color: white;color:black;border-color:black" onclick="displayAllMedication()">Med</button>
+                    </div>
+                    <div class = "row">
+                        <br><img src="/images/medication.jpg" style="border:solid; border-color:black; width:64px; height:64px;" onclick="displayAllMedication()">
+                    </div>
+            </div>
+            <div class="col-sm-2 text-center" id="16">
+                    <div class = "row">
+                        <br><button type="button" class="btn btn-info" style="background-color: white;color:black;border-color:black" onclick = "displayAllScanning()">Scan</button>
+                    </div>
+                    <div class = "row">
+                        <br><img src="/images/scanning.jpg" style="border:solid; border-color:black; width:64px; height:64px;" onclick = "displayAllScanning()">
+                    </div>
+            </div>
+            <div class="col-sm-2 text-center" id="17">
+                <div class = "row">
+                    <br><button type="button" class="btn btn-danger" style="background-color: white;color:black;border-color:black" onclick = "displayAllBloodTest()">Blood</button>
+                </div>
+                <div class = "row">
+                    <br><img src="/images/bloodtest.jpg" style="border:solid; border-color:black; width:64px; height:64px;" onclick = "displayAllBloodTest()">
+                </div>
+            </div>
+            <div class="col-sm-2 text-center">
+                <div class = "row">
+                    <br><button  type="button" class="btn btn-default" style="background-color: white;color:black;border-color:black" onclick="displayBack()">Home</button>
+                </div>
+                <div class = "row">
+                    <br><img src="/images/return.jpg" style="border:solid; border-color:black; width:64px; height:64px;" onclick="displayBack()">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- display instruction for timeline-->
+    <div class="row">
+        <div class="col-sm-6">
+            <br>
+            <p>
+                Starttime: <input type="text" id="startDate" value="">
+                Endtime:   <input type="text" id="endDate" value="">
+                <input type="button" id="setRange" value="Set" onclick="setTime();">
+                <input type="button" id="setCurrentTime" value="Current time" onclick="setCurrentTime();">
+            </p>
+            <p id = "show" style = "background-color: #00B7FF"></p>
+        </div>
+        <div class="col-sm-6">
+            <div id="detail" style="display:none">
+                <img id="scanning" src="" style = "display: inline; margin-left: 270px; margin-top:-50px; width:200px; height:200px;"/>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="mytimeline"></div>
+            <br>
+
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-sm-12">
+            <p>
+                Duration Time
+            </p>
+            <div id="mytimeline2"> </div>
+            <br>
+            <!-- Information about where the used icons come from
+            <div id="info" ></div>-->
+        </div>
+    </div>
+    <!--pop box for each icon -->
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" id="modalHeader">Modal Header</h4>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <p>Some text in the modal.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

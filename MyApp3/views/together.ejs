@@ -1,0 +1,2033 @@
+<html>
+<head>
+    <title>Electrical Medical Record</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script type="text/javascript" src="/javascripts/bootstrap.min.js"></script>
+
+    <!-- jquery ui-->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/flick/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.0/jquery-ui.min.js"></script>
+
+    <!-- jquery ui-->
+
+    <script src="/javascripts/jquery-ui-slider-pips.min.js"> </script>
+    <link rel="stylesheet" href="/css/jquery-ui-slider-pips.min.css">
+   <!-- <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>  -->
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <style type="text/css">
+        img {
+            overflow:hidden;
+        }
+
+        .node {
+            cursor: pointer;
+        }
+
+        .overlay{
+            background-color:#EEE;
+        }
+
+        .node circle {
+            fill: #fff;
+            stroke: steelblue;
+            stroke-width: 1.5px;
+        }
+
+        .node text {
+            font-size:10px;
+            font-family:sans-serif;
+        }
+
+        .link {
+            fill: none;
+            stroke: #ccc;
+            stroke-width: 1.5px;
+        }
+
+        .templink {
+            fill: none;
+            stroke: red;
+            stroke-width: 3px;
+        }
+
+        .ghostCircle.show{
+            display:block;
+        }
+
+        .ghostCircle, .activeDrag .ghostCircle{
+            display: none;
+        }
+        #dialogBox{
+            z-index: 30;
+            border-style: solid;
+            border-color: #00B7FF;
+            position:relative;
+            top:20px;
+            width:60%;
+            left:20px;
+            padding: 20px;
+            display: none;
+            overflow:auto;
+            background-color: #cccccc;
+        }
+        #myModal{
+            top:10%;
+            left:60%;
+            outline:none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" > <!-- navigation bar on the top-->
+        <nav class="navbar navbar-default navbar-fixed-top"  role="navigation" style="padding-right: 15px">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header" >
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span><span
+                            class="icon-bar"></span><span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href='http://127.0.0.1:3000/together/together'  style="font-size:150%"> Login</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="active" style="font-size:150%"><a href="http://127.0.0.1:3000/together/together"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+                    <li style="font-size:150%"><a href="http://127.0.0.1:3000/history/type=all/position=0"><span class="glyphicon glyphicon-calendar"><p> </p></span> History Record</a> </li>
+                    <li style="font-size:150%"><a href="http://127.0.0.1:3000/bloodTest"><span class="glyphicon glyphicon-tint"></span> Laboratory Test</a> </li>
+                    <li style="font-size:150%"><a href="http://127.0.0.1:3000/together/together"><span class="glyphicon glyphicon-picture"></span> Medical Imaging</a> </li>
+                   <!--
+                    <li class="dropdown"><class="dropdown-toggle" data-toggle="dropdown"><span
+                                    class="glyphicon glyphicon-search"></span>Search <b class="caret"></b></a>
+                        <ul class="dropdown-menu" style="min-width: 300px;">
+                            <li>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <form class="navbar-form navbar-left" role="search">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" placeholder="Search" />
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-primary" type="button">
+                                                    Go!</button>
+                                            </span>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span
+                                    class="glyphicon glyphicon-comment"></span>Chats <span class="label label-primary">42</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#"><span class="label label-warning">7:00 AM</span>Hi :)</a></li>
+                            <li><a href="#"><span class="label label-warning">8:00 AM</span>How are you?</a></li>
+                            <li><a href="#"><span class="label label-warning">9:00 AM</span>What are you doing?</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#" class="text-center">View All</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span
+                                    class="glyphicon glyphicon-envelope"></span>Inbox <span class="label label-info">32</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#"><span class="label label-warning">4:00 AM</span>Favourites Snippet</a></li>
+                            <li><a href="#"><span class="label label-warning">4:30 AM</span>Email marketing</a></li>
+                            <li><a href="#"><span class="label label-warning">5:00 AM</span>Subscriber focused email
+                                    design</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#" class="text-center">View All</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span
+                                    class="glyphicon glyphicon-user"></span>Doctor K <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#"><span class="glyphicon glyphicon-user"></span>Profile</a></li>
+                            <li><a href="#"><span class="glyphicon glyphicon-cog"></span>Settings</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#"><span class="glyphicon glyphicon-off"></span>Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </nav>
+    </div>   <!--end of navigation bar -->
+
+
+    <div class="container-fluid" style="padding-top: 80px">
+        <div class="row">
+            <div class="col-sm-5">
+                <div class="row">
+                    <!-- left  -->
+                    <div class="col-sm-5"> <!--show patient information -->
+                        <div class="row" style="height: 50%">
+                            <!-- select patient in database ,left top -->
+                            <div class="col-sm-12 text-center" style="padding-left:0; padding-right:0;">
+                                <!-- select patient in database ,left top -->
+                                <form role="form" action="/cookiePost" method="post" style=" border-style: solid;border-color: black;margin:10px;">
+                                    <div class="form-group" >
+                                        <label><h4><strong>Patient</strong></h4></label>
+                                        <select class="form-control" type="text" name="patientID">
+                                            <option value="" disabled="disabled" selected="selected">Select one patient</option>
+                                            <% patients.forEach(function(item){ %>
+                                            <option value="<%= item.patient_id%>"><%= item.patient_name%></option>
+                                            <% }) %>
+                                        </select>
+                                    </div>
+                                    <button id = "create_user" type="button"><strong>Create User</strong></button>
+                                    <button type="submit"><strong>Confirm</strong></button>
+                                </form> <!-- select patient in database ,left top one-->
+                                <div style = "background-color: white">
+                                    <button id = "show_hide_patient_info" style="font-size:24px"><i id = "up_down" class="fa fa-angle-double-up" ></i></button>
+                                </div><!-- end: select patient in database ,left top -->
+
+                                <!-- show patient information : personal information + medical information left bottom -->
+                                <div id="create_show_patient" style="margin: 10px;">
+                                    <% if(selectedPatient != []) {%>
+                                    <% patients.forEach(function(item){ %>
+                                    <% if(item.patient_id == selectedPatient) {%>
+                                    <div id = "show_basic_patient_info" style="padding: 10px;" >
+                                        <table class="table" style="background-color: #6666FF;">
+                                            <caption style=" border-style: solid;border-color: black;text-align: center"><h4><strong>Personal Information</strong></h4></caption>
+                                            <tbody>
+                                                <tr class="success ">
+                                                    <td style="background-color: white"><strong>Name</strong></td>
+                                                    <td style="background-color: white"><%= item.patient_name%></td>
+                                                </tr>
+                                                <tr class="success">
+                                                    <td style="background-color: white"><strong>Gender</strong></td>
+                                                    <td style="background-color: white"><%= item.sex%></td>
+                                                </tr>
+                                                <tr class="success">
+                                                    <td style="background-color: white"><strong>Birth Date</strong></td>
+                                                    <td style="background-color: white"><%= item.birth_date%></td>
+                                                </tr>
+                                                <tr class="success">
+                                                    <td style="background-color: white"><strong>Blood Type</strong></td>
+                                                    <td style="background-color: white"><%= item.blood_type%></td>
+                                                </tr>
+                                                <tr class="success">
+                                                    <td style="background-color: white"><strong>Address</strong></td>
+                                                    <td style="background-color: white"><%= item.address%></td>
+                                                </tr>
+                                                <tr class="success">
+                                                    <td style="background-color: white"><strong>Phone</strong></td>
+                                                    <td style="background-color: white"><%= item.phone%></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                        <!--Basic Medical Profile -->
+                                        <table class="table" style="background-color: #6666FF;">
+                                            <caption style="border-style: solid;border-color: black;text-align: center"><h4><strong>Basic Medical Profile</strong></h4></caption>
+                                            <tbody>
+                                                <tr class="success">
+                                                    <td style="background-color: white"><strong>Allergies</strong></td>
+                                                    <td style="background-color: white"><%= item.allergies%></td>
+                                                </tr>
+                                                <tr class="success">
+                                                    <td style="background-color: white"><strong>Risk</strong></td>
+                                                    <td style="background-color: white"><%= item.risk%></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                        <!-- Family Medical History -->
+                                        <table class="table" style="background-color: #6666FF;">
+                                            <caption style=" border-style: solid;border-color: black;text-align: center"><h4><strong>Family Medical History</strong></h4></caption>
+                                            <tbody>
+                                                <tr class="success">
+                                                    <td style="background-color: white"><strong>Mother</strong></td>
+                                                    <td style="background-color: white"><%= item.mother%></td>
+                                                </tr>
+                                                <tr class="success">
+                                                    <td style="background-color: white"><strong>Father</strong></td>
+                                                    <td style="background-color: white"><%= item.father%></td>
+                                                </tr>
+                                                <tr class="success">
+                                                    <td style="background-color: white"><strong>P_Grand_Mother</strong></td>
+                                                    <td style="background-color: white"><%= item.paternal_grand_mother%></td>
+                                                </tr>
+                                                <tr class="success">
+                                                    <td style="background-color: white"><strong>p_Grand Father</strong></td>
+                                                    <td style="background-color: white"><%= item.paternal_grand_father%></td>
+                                                </tr>
+                                                <tr class="success">
+                                                    <td style="background-color: white"><strong>M_Grand_Mother</strong></td>
+                                                    <td style="background-color: white"><%= item.maternal_grand_mother%></td>
+                                                </tr>
+                                                <tr class="success">
+                                                    <td style="background-color: white"><strong>M_Grand Father</strong></td>
+                                                    <td style="background-color: white"><%= item.maternal_grand_father%></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <%}%>
+                                    <% }) %>
+                                    <% } %>
+
+                                </div>
+                            </div><!-- show patient information : personal information + medical information left bottom -->
+                        </div>
+                        <!--
+                        <div class="row">
+                            <div class="col-sm-12 text-center" style="padding-left:0; padding-right:0;">
+
+                            </div>
+                        </div>
+                        -->
+                    </div>
+
+                    <div class="col-sm-7 text-center" style="z-index:50;padding-left:0; padding-right:0;">
+                        <!--point form in the left 2 of the page -->
+
+                                <form role="form" name="pointform" action='/together' method="post" >
+
+
+                                    <div class="form-group" style="display: none">
+                                        <label for="Symptom-Category"><h4><strong>Symptom Category</strong></h4></label>
+                                        <select class="form-control" id="healthcategory" name="HealthCategory"></select>
+                                    </div>
+
+                                    <div class="form-group" style="display: none">
+                                        <label for="X Position"><h4><strong>X Position</strong></h4></label>
+                                        <input type="text" class="form-control" id="fx" name="form_x" style="font-weight:900" placeholder="Enter X_Position">
+                                    </div>
+                                    <div class="form-group" style="display: none">
+                                        <label for="Y Position"><h4><strong>Y Position</strong></h4></label>
+                                        <input type="text" class="form-control" id="fy" name="form_y" style="font-weight:900" placeholder="Enter Y_Position">
+                                    </div>
+
+                                    <button type="submit" class="btn btn-default" style="text-align:left;"><strong>Adding medical events on patient body</strong></button>
+                                </form>
+                       <div  style="padding: 30px">
+                       <!--        <form action="#">
+
+                                <fieldset>
+                                    <label for="valueAA">From:</label>
+                                    <select name="valueAA" id="valueAA">
+                                        <optgroup label="">
+                                            <option value="2010" selected="selected">2010 </option>
+                                            <option value="2011">2011 </option>
+                                            <option value="2012">2012 </option>
+                                            <option value="2013">2013 </option>
+                                            <option value="2014">2014 </option>
+                                            <option value="2015">2015 </option>
+                                            <option value="2016">2016 </option>
+                                            <option value="2017">2017 </option>
+                                        </optgroup>
+                                    </select>
+
+                                    <label for="valueBB">To:</label>
+                                    <select name="valueBB" id="valueBB">
+                                        <optgroup label="">
+                                            <option value="2010" >2010 </option>
+                                            <option value="2011">2011 </option>
+                                            <option value="2012">2012 </option>
+                                            <option value="2013">2013 </option>
+                                            <option value="2014">2014 </option>
+                                            <option value="2015">2015 </option>
+                                            <option value="2016">2016 </option>
+                                            <option value="2017" selected="selected">2017 </option>
+                                        </optgroup>
+                                    </select>
+                                </fieldset>
+                            </form>
+                            -->
+                            <div class="slider">
+                    <h3 id="years-output">
+    </h3 >
+                            </div>
+                        </div>
+
+
+                    <div style="padding-top: 30px">
+                        <p id="log" style = "width:100%;color : #0000ff; z-index:30; border-color: red;"></p>
+                            </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- display images -->
+            <div class="col-sm-4" style="padding-left:0; padding-right:0;">
+                <!--
+                <div class="row">
+                    <div class="col-sm-6">
+                    </div>
+                    <div class="col-sm-6">
+                       <button type="submit" class="btn btn-info" style="text-align:center;"><strong>Change views</strong></button>
+                    </div>
+                </div>
+                -->
+                <div class="row">
+                    <div class="col-sm-12" style="padding-left:0; padding-right:0;">
+                <% if(hasCookie != []) {%>
+                    <% for(var i in patients) {%>
+                        <% if(patients[i].patient_id == selectedPatient) {%>
+                            <% if(patients[i].sex == 'Male') {%>
+                <img id="parent" src="/images/Male_<%=bodyCategory%>.png" alt="Together System" style = 'position:absolute;top:0px; z-index :7;'/>
+                        <img id="parent" src="/images/Male2_<%=bodyCategory%>.png" alt="Together System" style = 'position:absolute;top:0px; z-index :7;'/>
+                <%} else {%>
+                        <div class="row" style="position : absolute;">
+                            <div class="col-sm-6">
+                <img id="parent" src="/images/Female_<%=bodyCategory%>.png" alt="Together System" style = 'position:absolute;top:0px; z-index :7;'/>
+                            </div>
+                            <div class="col-sm-6" style="margin-left:310px;">
+                            <img id="parent" src="/images/Female2_<%=bodyCategory%>.png" alt="Together System" style = 'position:absolute;top:0px; z-index :7;'/>
+                            </div>
+                        </div>
+                <% } %>
+                <% } %>
+                <% } %>
+                <% } %>
+
+                        <canvas id="myCanvas" width="520" height="755" style="position:absolute;top: 0px; z-index:20" onclick=draw1(event) ></canvas>
+
+                    </div>
+
+
+                </div>
+
+            </div> <!--  display images for body category -->
+
+            <!-- display right side bar-->
+            <div class="col-sm-3">
+                <div class="row">
+
+
+                    <div class="col-sm-12 " style="z-index:50;padding-left:0; padding-right:0; text-align: center">
+                        <table class="table" style=" border-style: solid;border-color: white;">
+                            <tbody>
+                            <tr><td style="text-align: center;font-size : 20px;  border-style: solid;border-color: white;">
+                                </td></tr></tbody></table>
+                        <h4 style="background-color: transparent"><button id = "1" class="btn" onclick = "displayTogether()" style ="font-size : 20px;  border-style: solid;border-color: black;background-color: white; width:200px;">Integrated </button></h4>
+                        <h4 style="background-color: transparent"><button id = "2"  class="btn" onclick = "displaySkeleton()" style ="font-size : 20px; background-color:#FF0033; width:200px;">Skeletal</button></h4>
+                        <h4 style="background-color: transparent"><button id = "3"  class="btn" onclick = "displayMuscle()" style ="font-size : 20px;background-color:#6666FF;width:200px;">Muscular</button></h4>
+                        <h4 style="background-color: transparent"><button id = "4" class="btn" onclick = "displayCardiovascular()" style ="font-size : 20px;background-color:#CCFF33;width:200px;">Cardiovascular</button></h4>
+                        <h4 style="background-color: transparent"><button id = "5" class="btn" onclick = "displayDigestive()" style ="font-size : 20px;background-color:#00CC33;width:200px;">Digestive</button></h4>
+                        <h4 style="background-color: transparent"><button id = "6" class="btn" onclick = "displayNervous()" style ="font-size : 20px;background-color:#FF66FF;width:200px;">Nervous</button></h4>
+                        <h4 style="background-color: transparent"><button id = "7" class="btn" onclick = "displayImmune()" style ="font-size : 20px;background-color:#fa6900;width:200px;">Immune</button></h4>
+                        <h4 style="background-color: transparent"><button id = "8" class="btn" onclick = "displayRespiratory()" style ="font-size : 20px;background-color:#00B7FF;width:200px;">Respiratory</button></h4>
+                        <h4 style="background-color: transparent"><button id = "9" class="btn" onclick = "displayReproductive()" style ="font-size : 20px;background-color:#ff7f6e;width:200px;">Reproductive</button></h4>
+                        <h4 style="background-color: transparent"><button id = "10" class="btn" onclick = "displayUrinary()" style ="font-size : 20px;background-color:#6e94ff;width:200px;">Urinary</button></h4>
+                        <h4 style="background-color: transparent"><button id = "11" class="btn" onclick = "displayEndocrine()" style ="font-size : 20px;background-color:#ffc200;width:200px;">Endocrine</button></h4>
+                        <h4 style="background-color: transparent"><button id = "12" class="btn" onclick = "displaySkin()" style ="font-size : 20px;background-color:#00ffd2;width:200px;">Skin</button></h4>
+
+                    </div>
+
+                    </div>
+                </div>
+
+            <div class="row">
+                <div id="dialogBox"></div>
+            </div>
+        </div> <!-- display right side bar-->
+    </div>
+    </div> <!--class="container-fluid" -->
+
+    <div id="dialogBox">
+
+    </div>
+
+    <!-- Modal -->
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content" id="backcolor">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" id="modalHeader">Modal Header</h4>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <p>Some text in the modal.</p>
+                </div>
+                <!--
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    -->
+            </div>
+
+        </div>
+    </div>
+
+
+
+    <script>
+        /******************************************************************************************************/
+        /*initialize*/
+        var canvas = document.getElementById('myCanvas'); //find the canvas element
+        var canvas2 = document.getElementById('myCanvas2');
+        var context = canvas.getContext('2d');// a drawing object for the canvas
+        var doctor_circles = [];
+        var s_circles = [];
+        var circles = [];
+        var icd = [];
+        var history_records = [];
+        /******************************************************************************************************/
+        /******************************************************************************************************/
+        /*filter */
+        var years = ["2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017"];
+        var value = 2016;
+        // lets be fancy for the demo and select the current month.
+
+        $(".slider")
+
+        // activate the slider with options
+                .slider({
+                    min: 0,
+                    max: years.length-1,
+                    value: 6
+                })
+
+                // add pips with the labels set to "months"
+                .slider("pips", {
+                    rest: "label",
+                    labels: years
+                })
+                // and whenever the slider changes, lets echo out the month
+                .on("slidechange", function(e,ui) {
+                    value = ui.value +2010 ;
+                    console.log(value);
+                    <% position_doctor.forEach(function(item){ %>
+
+                     if (<%= item.start_time %>!= null){
+                     console.log( parseInt(<%= item.start_time %>/10000));}
+
+                     if(value == parseInt(<%= item.start_time %>/10000)) {
+                     drawDoctorCircle(context, <%= item.position_x %>, <%= item.position_y %>, '<%= item.ICD_id %>', '<%= item.disease_type %>', '<%= item.symptom %>', '<%= item.severity %>', '<%= item.start_time %>', '<%= item.end_time %>', "green", 20, 4, "#003300", "white", "center", "bold 16px Arial", '<%= item.position_doctor_id %>', doctor_circles);
+                     }else{
+                        context.clearRect( <%= item.position_x %>-30, <%= item.position_y %>-30,60, 60);
+                    }
+
+                    <% }) %>
+                });
+
+        //context.clearRect( 122-10, 133-10,10, 10);
+
+        /******************************************************************************************************/
+        /* --------------Create a new user---------------------- */
+        $(document).on('click',"#create_user",function(){
+            document.getElementById("create_show_patient").innerHTML="";
+            createUser();
+        })
+        function createUser(){
+            var createUserTitle="<h3 style=' border-style: solid;border-color: black; padding: 10px;'>Create New Patient</h3><hr>";
+            var createUserTestForm="<form action='/createUserPost' method='post' role=\"form\" style = ' border-style: solid;border-color: black;  margin-top: -30px;'>"+
+                    "<div calss=\"form-group\"><label for=\"inputdefault\"><strong>Name</strong></label><input class=\"form-control\" name = 'inputname' id=\"inputName\" type=\"text\"></div>" +
+                    "<div class=\"form-group\"><label for=\"inputdefault\"><strong>Sex</strong></label>" +
+                    "<select class=\"form-control\" name = 'inputsex' id=\"inputSex\" type=\"text\"><option>Please Select Gender</option><option>Male</option><option>Female</option></select></div>"+
+                    "<div calss=\"form-group\"><label for=\"inputdefault\"><strong>Birth Date</strong></label><input class=\"form-control\" name = 'inputbirthdate' id=\"inputbirthdate\" type=\"text\"></div>" +
+                    "<div class=\"form-group\"><label for=\"inputdefault\"><strong>Blood Type</strong></label>" +
+                    "<select class=\"form-control\" name = 'inputbloodtype' id=\"inputBloodType\" type=\"text\"><option>please select Blood Type</option><option>A</option><option>B</option><option>O</option></select></div>"+
+                    "<div calss=\"form-group\"><label for=\"inputdefault\"><strong>Address</strong></label><input class=\"form-control\" name = 'inputaddress' id=\"inputAddress\" type=\"text\"></div>" +
+                    "<div calss=\"form-group\"><label for=\"inputdefault\"><strong>Phone</strong></label><input class=\"form-control\" name = 'inputphone' id=\"inputPhone\" type=\"text\"></div>" +
+                    "<div calss=\"form-group\"><label for=\"inputdefault\"><strong>Allergies</strong></label><input class=\"form-control\" name = 'inputallergies' id=\"inputAllergies\" type=\"text\"></div>" +
+                    "<div calss=\"form-group\"><label for=\"inputdefault\"><strong>Risk</strong></label><input class=\"form-control\" name = 'inputrisk' id=\"inputRisk\" type=\"text\"></div>" +
+                    "<div calss=\"form-group\"><label for=\"inputdefault\"><strong>Mother</strong></label><input class=\"form-control\" name = 'inputmother' id=\"inputMother\" type=\"text\"></div>" +
+                    "<div calss=\"form-group\"><label for=\"inputdefault\"><strong>Father</strong></label><input class=\"form-control\" name = 'inputfather' id=\"inputFather\" type=\"text\"></div>" +
+                    "<div calss=\"form-group\"><label for=\"inputdefault\"><strong>Paternal_Grand_Mother</strong></label><input class=\"form-control\" name = 'inputpaternalgrandmother' id=\"inputPaternalGrandMother\" type=\"text\"></div>" +
+                    "<div calss=\"form-group\"><label for=\"inputdefault\"><strong>Paternal_Grand_Father</strong></label><input class=\"form-control\" name = 'inputpaternalgrandfather' id=\"inputPaternalGrandFather\" type=\"text\"></div>" +
+                    "<div calss=\"form-group\"><label for=\"inputdefault\"><strong>Maternal_Grand_Mother</strong></label><input class=\"form-control\" name = 'inputmaternalgrandmother' id=\"inputMaternalGrandMother\" type=\"text\"></div>" +
+                    "<div calss=\"form-group\"><label for=\"inputdefault\"><strong>Maternal_Grand_Father</strong></label><input class=\"form-control\" name = 'inputmaternalgrandfather' id=\"inputMaternalGrandFather\" type=\"text\"></div>" +
+                    "<button type=\"submit\" style = ' border-style: solid;border-color: black;' class=\"btn btn-default\"><strong>Submit</strong></button>"+
+                    "</form>";
+            document.getElementById("create_show_patient").innerHTML=createUserTitle+createUserTestForm;
+        }
+        /* --------------up and down the button--------------------- */
+        $(document).on('click',"#show_hide_patient_info",function(){
+            $("#show_basic_patient_info").slideToggle("slow",function(){
+
+                if($("#show_basic_patient_info").css('display')=='none') {
+                    $("#show_hide_patient_info").html("<i id = \"up_down\" class=\"fa fa-angle-double-down\" ></i>");
+                } else {
+                    $("#show_hide_patient_info").html("<i id = \"up_down\" class=\"fa fa-angle-double-up\" ></i>");
+                }
+            });
+        });
+
+        /******************************************************************************************************/
+        /******************************************************************************************************/
+        var drawDiagnosis = function(context,x,y,description,severity,start_time,end_time,clinical_note ,fillcolor,radius,linewidth,strokestyle,fontcolor,textalign,fonttype,filltext){
+            context.beginPath();
+            context.arc(x, y, radius, 0, 2 * Math.PI, false);
+            context.lineWidth = linewidth;
+            context.setLineDash([0]);
+            strokestyle = "#000000";
+            context.strokeStyle = strokestyle;
+            context.stroke();
+            context.fillStyle = fontcolor;
+            context.textAlign = textalign;
+            context.font = fonttype;
+
+
+        }
+        var Circle = function(x, y,description, severity,start_time,end_time,clinical_note , radius, filltext) {
+            this.left = x - radius;
+            this.top = y - radius;
+            this.right = x + radius;
+            this.bottom = y + radius;
+            this.description = description;
+            this.start_time = start_time;
+            this.end_time = end_time;
+            this.clinical_note =clinical_note ;
+            this.severity = severity;
+            this.d_position_id = filltext;
+            console.log("circle diagnosis: " + this.d_position_id);
+            //console.log(radius);
+        };
+        var drawDiagnosisCircle = function (context, x, y, description, severity,start_time,end_time,clinical_note , fillcolor, radius, linewidth, strokestyle, fontcolor, textalign, fonttype, filltext, circles) {
+            drawDiagnosis(context, x, y, description, severity, start_time,end_time,clinical_note ,fillcolor, radius, linewidth, strokestyle, fontcolor, textalign, fonttype, filltext);
+            var circle = new Circle(x, y,description,severity, start_time,end_time,clinical_note ,radius, filltext);
+            circles.push(circle);
+            //console.log(circles);
+        };
+
+        /******************************************************************************************************/
+        //show position
+        <% d_position.forEach(function(item){ %>
+        /* map each value of each field to table */
+       // console.log(<%= item.d_position_id%>,<%= item.start_time %>);
+        //if(2015 == <%= item.start_time %>) {
+            drawDiagnosisCircle(context, <%= item.position_x %>, <%= item.position_y %>, '<%= item.symptom %>', '<%= item.severity %>', '<%= item.start_time %>', '<%= item.end_time %>', '<%= item.clinical_note %>', "black", 20, 3, "#FFFFFF", "white", "center", "bold 16px Arial", '<%= item.d_position_id %>', circles);
+       // }
+        <% }) %>
+
+        /******************************************************************************************************/
+        var drawDoctor = function (context, x, y, icd, image_type, description, severity, start_time,end_time,fillcolor, radius, linewidth, strokestyle, fontcolor, textalign, fonttype, filltext) {
+            context.beginPath();
+            context.arc(x, y, radius, 0, 2 * Math.PI, false);
+            // draw circle with different colors
+            context.lineWidth = linewidth;
+            context.setLineDash([0]);
+            if (image_type == "Skeleton") {
+                strokestyle = "#FF0033";
+                context.strokeStyle = strokestyle;
+            } else if (image_type == "Muscular") {
+                strokestyle = "#6666FF";
+                context.strokeStyle = strokestyle;
+            } else if (image_type == "Cardiovascular") {
+                strokestyle = "#CCFF33";
+                context.strokeStyle = strokestyle;
+            } else if (image_type == "Digestive") {
+                strokestyle = "#00CC33";
+                context.strokeStyle = strokestyle;
+            } else if (image_type == "Nervous") {
+                strokestyle = "#FF66FF";
+                context.strokeStyle = strokestyle;
+            } else if (image_type == "Immune") {
+                strokestyle = "#fa6900";
+                context.strokeStyle = strokestyle;
+            } else if (image_type == "Respiratory") {
+                strokestyle = "#00B7FF";
+                context.strokeStyle = strokestyle;
+            } else if (image_type == "Reproductive") {
+                strokestyle = "#ff7f6e";
+                context.strokeStyle = strokestyle;
+            }else if (image_type == "Urinary") {
+                strokestyle = "#6e94ff";
+                context.strokeStyle = strokestyle;
+            } else if (image_type == "Endocrine") {
+                strokestyle = "#ffc200";
+                context.strokeStyle = strokestyle;
+            } else if (image_type == "Skin") {
+                strokestyle = "#00ffd2";
+                context.strokeStyle = strokestyle;
+            } else {
+                strokestyle = "#ffffff";
+                context.strokeStyle = strokestyle;
+            }
+            context.stroke();
+
+            context.fillStyle = fontcolor;
+            context.textAlign = textalign;
+            context.font = fonttype;
+
+        }
+
+        var Doctor_Circle = function(x, y, icd, image_type, description, severity, start_time,end_time,radius, filltext) {
+            this.left = x - radius;
+            this.top = y - radius;
+            this.right = x + radius;
+            this.bottom = y + radius;
+            this.icd = icd;
+            this.severity = severity;
+            this.image_type = image_type;
+            this.description = description;
+            this.start_time = start_time;
+            this.end_time = end_time;
+            this.position_doctor_id = filltext;
+            console.log("Doctor circle : " + this.position_doctor_id);
+            //console.log(radius);
+        };
+
+        var drawDoctorCircle = function (context, x, y, icd, image_type, description, severity,start_time,end_time, fillcolor, radius, linewidth, strokestyle, fontcolor, textalign, fonttype, filltext, circles) {
+            drawDoctor(context, x, y, icd, image_type, description, severity, start_time,end_time,fillcolor, radius, linewidth, strokestyle, fontcolor, textalign, fonttype, filltext);
+            var doctor_circle = new Doctor_Circle(x, y, icd, image_type, description, severity,start_time,end_time, radius, filltext);
+            doctor_circles.push(doctor_circle);
+            //console.log(circles);
+        };
+        /******************************************************************************************************/
+        <% position_doctor.forEach(function(item){ %>
+
+            drawDoctorCircle(context, <%= item.position_x %>, <%= item.position_y %>, '<%= item.ICD_id %>', '<%= item.disease_type %>', '<%= item.symptom %>', '<%= item.severity %>', '<%= item.start_time %>', '<%= item.end_time %>', "green", 20, 4, "#003300", "white", "center", "bold 16px Arial", '<%= item.position_doctor_id %>', doctor_circles);
+
+
+        <% }) %>
+        /******************************************************************************************************/
+        var drawSymptom = function (context, x, y, description,severity, start_time,end_time,fillcolor, radius, linewidth, strokestyle, fontcolor, textalign, fonttype, filltext) {
+            context.beginPath();
+            context.arc(x, y, radius, 0, 2 * Math.PI, false);
+            context.lineWidth = linewidth;
+            context.setLineDash([5]);
+            strokestyle = "#000000";
+            context.strokeStyle = strokestyle;
+            context.stroke();
+            context.fillStyle = fontcolor;
+            context.textAlign = textalign;
+            context.font = fonttype;
+
+        }
+        var S_Circle = function(x, y,description, severity,start_time,end_time, radius, filltext) {
+            this.left = x - radius;
+            this.top = y - radius;
+            this.right = x + radius;
+            this.bottom = y + radius;
+            this.description = description;
+            this.severity = severity;
+            this.start_time = start_time;
+            this.end_time = end_time;
+            this.s_position_id = filltext;
+            //console.log(radius);
+            console.log(" s_circle : " + this.s_position_id);
+        };
+        var drawSymptomCircle = function (context, x, y, description, severity,start_time,end_time, fillcolor, radius, linewidth, strokestyle, fontcolor, textalign, fonttype, filltext, s_circles) {
+            drawSymptom(context, x, y, description,severity,start_time,end_time, fillcolor, radius, linewidth, strokestyle, fontcolor, textalign, fonttype, filltext);
+            var s_circle = new S_Circle(x, y,description,severity,start_time,end_time, radius, filltext);
+            s_circles.push(s_circle);
+            //console.log(circles);
+        };
+        /******************************************************************************************************/
+        <% s_position.forEach(function(item){ %>
+        /* map each value of each field to table */
+
+        drawSymptomCircle(context, <%= item.position_x %>, <%= item.position_y %>, '<%= item.symptom %>', '<%= item.severity %>', '<%= item.start_time %>','<%= item.end_time %>',"black", 20, 3, "#FFFFFF", "white", "center", "bold 16px Arial", '<%= item.s_position_id %>', s_circles);
+
+
+        <% }) %>
+        /******************************************************************************************************/
+        /* double click displaying the organs*/
+
+        function draw1(e) {
+            var pos = getMousePos(canvas, e);
+            posx = pos.x;
+            posy = pos.y;
+            console.log(posx,posy);
+            document.pointform.form_x.value = posx;
+            document.pointform.form_y.value = posy;
+            context.clearRect ( 0 , 0 , canvas.width, canvas.height );
+            circles = [];
+            doctor_circles = [];
+            /******************************************************************************************************/
+            /*draw circles by postion ;当你鼠标单击一个circle的时候 ,显示相应所有的其他圈*/
+            <% position_doctor.forEach(function(item){ %>
+
+            drawDoctorCircle(context, <%= item.position_x %>, <%= item.position_y %>, '<%= item.ICD_id %>', '<%= item.disease_type %>', '<%= item.symptom %>', '<%= item.severity %>', '<%= item.start_time %>', '<%= item.end_time %>', "green", 20, 4, "#003300", "white", "center", "bold 16px Arial", '<%= item.position_doctor_id %>', doctor_circles);
+
+
+            <% }) %>
+            /****************************************************************************/
+            <% s_position.forEach(function(item){ %>
+            /* map each value of each field to table */
+
+            drawSymptomCircle(context, <%= item.position_x %>, <%= item.position_y %>, '<%= item.symptom %>', '<%= item.severity %>', '<%= item.start_time %>','<%= item.end_time %>',"green", 20, 3, "#003300", "black", "center", "bold 16px Arial", '<%= item.s_position_id %>', s_circles);
+
+
+            <% }) %>
+            /******************************************************************************************************/
+            <% d_position.forEach(function(item){ %>
+            /* map each value of each field to table */
+
+            drawDiagnosisCircle(context, <%= item.position_x %>, <%= item.position_y %>, '<%= item.symptom %>', '<%= item.severity %>','<%= item.start_time %>','<%= item.end_time %>','<%= item.clinical_note%>' ,  "green", 20, 3, "#003300", "black", "center", "bold 16px Arial", '<%= item.d_position_id %>', circles);
+
+
+            <% }) %>
+            /****************************************************************************/
+            /* for each circle ,diagnosis,treatment ,medication and scanning : add,latest and history 对每一个类型的圈,加左边的医疗记录*/
+            var clickedX = posx//e.pageX - this.offsetLeft-667;
+            var clickedY = posy//e.pageY - this.offsetTop;
+            var flag = 0;
+            for (var i = 0; i < doctor_circles.length; i++) {
+                if (clickedX < doctor_circles[i].right && clickedX > doctor_circles[i].left && clickedY > doctor_circles[i].top && clickedY < doctor_circles[i].bottom) {
+
+                    if(doctor_circles[i].image_type == "Skeleton"){
+                        $( "#log").empty();
+                        $("#log").css('color','black');
+                        $("#log").css('border-color','black');
+                        $("#log").css('border-style','solid');
+                        $( "#log" ).append("<b>Diagnosis type : </b>" +
+                                doctor_circles[i].image_type +
+                                " <br/><b>ICD number : </b>"+
+                                doctor_circles[i].icd +
+                                " <br/><b>Severity : </b>"+
+                                doctor_circles[i].severity +
+                                "<br><br><button style='width:80px; color: black'>Symptom</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addSymptom1("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"latestSymptom("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"displayDiagnosisHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px; color: black'>Diagnosis</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addDiagnosis("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"latestDiagnosis("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"displayDiagnosisHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px; color: black'>Treatment</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addTreatment("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"latestTreatment("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"displayTreatmentHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px; color: black'>Medication</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addMedication("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"latestMedication("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"displayMedicationHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px;color:black'>Medical Imaging</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addScan("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"latestScan("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"displayScanningHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button type=\"button\" onclick=\"displayAllPositionHistory("+ doctor_circles[i].position_doctor_id+")\" style='color:black'>All History</button><a> </a>"+
+                                "<br><br>"
+                        );
+                        BiggerSkeletal();
+                    }
+                    if(doctor_circles[i].image_type == "Muscular"){
+                        $( "#log").empty();
+                        $("#log").css('color','black');
+                        $("#log").css('border-color','black');
+                        $("#log").css('border-style','solid');
+                        $( "#log" ).append("<b>Diagnosis type : </b>" +
+                                doctor_circles[i].image_type +
+                                " <br/><b>ICD number : </b>"+
+                                doctor_circles[i].icd +
+                                " <br/><b>Severity : </b>"+
+                                doctor_circles[i].severity +
+                                "<br><br><button style='width:80px; color: black'>Symptom</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addSymptom1("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"latestSymptom("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"displayDiagnosisHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px; color: black'>Diagnosis</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addDiagnosis("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"latestDiagnosis("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"displayDiagnosisHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px; color: black'>Treatment</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addTreatment("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"latestTreatment("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"displayTreatmentHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px; color: black'>Medication</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addMedication("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"latestMedication("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"displayMedicationHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px;color:black'>Scanning</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addScan("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"latestScan("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"displayScanningHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button type=\"button\" onclick=\"displayAllPositionHistory("+ doctor_circles[i].position_doctor_id+")\" style='color:black'>All History</button><a> </a>"+
+                                "<br><br>"
+                        );
+                        BiggerMuscular();
+                    }
+                    if(doctor_circles[i].image_type == "Cardiovascular"){
+                        $( "#log").empty();
+                        $("#log").css('border-color','black');
+                        $("#log").css('border-style','solid');
+                        $( "#log" ).append("<b>Diagnosis type : </b>" +
+                                doctor_circles[i].image_type +
+                                " <br/><b>ICD number : </b>"+
+                                doctor_circles[i].icd +
+                                " <br/><b>Severity : </b>"+
+                                doctor_circles[i].severity +
+                                "<br><br><button style='width:80px; color: black'>Symptom</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addSymptom1("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"latestSymptom("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"displayDiagnosisHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px; color: black'>Diagnosis</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addDiagnosis("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"latestDiagnosis("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"displayDiagnosisHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px; color: black'>Treatment</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addTreatment("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"latestTreatment("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"displayTreatmentHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px; color: black'>Medication</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addMedication("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"latestMedication("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"displayMedicationHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px;color:black'>Scanning</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addScan("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"latestScan("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"displayScanningHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button type=\"button\" onclick=\"displayAllPositionHistory("+ doctor_circles[i].position_doctor_id+")\" style='color:black'>All History</button><a> </a>"+
+                                "<br><br>"
+                        );
+                        BiggerCardiovascular();
+                    }
+                    if(doctor_circles[i].image_type == "Digestive"){
+                        $( "#log").empty();
+                        $("#log").css('color','black');
+                        $("#log").css('border-color','black');
+                        $("#log").css('border-style','solid');
+                        $( "#log" ).append("<b>Diagnosis type : </b>" +
+                                doctor_circles[i].image_type +
+                                " <br/><b>ICD number : </b>"+
+                                doctor_circles[i].icd +
+                                " <br/><b>Severity : </b>"+
+                                doctor_circles[i].severity +
+                                "<br><br><button style='width:80px; color: black'>Symptom</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addSymptom1("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"latestSymptom("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"displayDiagnosisHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px; color: black'>Diagnosis</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addDiagnosis("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"latestDiagnosis("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"displayDiagnosisHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px; color: black'>Treatment</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addTreatment("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"latestTreatment("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"displayTreatmentHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px; color: black'>Medication</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addMedication("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"latestMedication("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"displayMedicationHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px;color:black'>Scanning</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addScan("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"latestScan("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"displayScanningHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button type=\"button\" onclick=\"displayAllPositionHistory("+ doctor_circles[i].position_doctor_id+")\" style='color:black'>All History</button><a> </a>"+
+                                "<br><br>"
+                        );
+                        BiggerDigestive();
+                    }
+                    if(doctor_circles[i].image_type == "Nervous"){
+                        $( "#log").empty();
+                        $("#log").css('color','black');
+                        $("#log").css('border-color','black');
+                        $("#log").css('border-style','solid');
+                        $( "#log" ).append("<b>Diagnosis type : </b>" +
+                                doctor_circles[i].image_type +
+                                " <br/><b>ICD number : </b>"+
+                                doctor_circles[i].icd +
+                                " <br/><b>Severity : </b>"+
+                                doctor_circles[i].severity +
+                                "<br><br><button style='width:80px; color: black'>Symptom</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addSymptom1("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"latestSymptom("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"displayDiagnosisHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px; color: black'>Diagnosis</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addDiagnosis("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"latestDiagnosis("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"displayDiagnosisHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px; color: black'>Treatment</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addTreatment("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"latestTreatment("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"displayTreatmentHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px; color: black'>Medication</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addMedication("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"latestMedication("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"displayMedicationHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px;color:black'>Scanning</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addScan("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"latestScan("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"displayScanningHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button type=\"button\" onclick=\"displayAllPositionHistory("+ doctor_circles[i].position_doctor_id+")\" style='color:black'>All History</button><a> </a>"+
+                                "<br><br>"
+                        );
+                        BiggerNervous();
+                    }
+                    if(doctor_circles[i].image_type == "Immune"){
+                        $( "#log").empty();
+                        $("#log").css('color','black');
+                        $("#log").css('border-color','black');
+                        $("#log").css('border-style','solid');
+                        $( "#log" ).append("<b>Diagnosis type : </b>" +
+                                doctor_circles[i].image_type +
+                                " <br/><b>ICD number : </b>"+
+                                doctor_circles[i].icd +
+                                " <br/><b>Severity : </b>"+
+                                doctor_circles[i].severity +
+                                "<br><br><button style='width:80px; color: black'>Symptom</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addSymptom1("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"latestSymptom("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"displayDiagnosisHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px; color: black'>Diagnosis</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addDiagnosis("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"latestDiagnosis("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"displayDiagnosisHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px; color: black'>Treatment</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addTreatment("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"latestTreatment("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"displayTreatmentHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px; color: black'>Medication</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addMedication("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"latestMedication("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"displayMedicationHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px;color:black'>Scanning</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addScan("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"latestScan("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"displayScanningHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button type=\"button\" onclick=\"displayAllPositionHistory("+ doctor_circles[i].position_doctor_id+")\" style='color:black'>All History</button><a> </a>"+
+                                "<br><br>"
+                        );
+                        BiggerImmune();
+                    }
+                    if(doctor_circles[i].image_type == "Respiratory"){
+                        $( "#log").empty();
+                        $("#log").css('color','black');
+                        $("#log").css('border-color','black');
+                        $("#log").css('border-style','solid');
+                        $( "#log" ).append("<b>Diagnosis type : </b>" +
+                                doctor_circles[i].image_type +
+                                " <br/><b>ICD number : </b>"+
+                                doctor_circles[i].icd +
+                                " <br/><b>Severity : </b>"+
+                                doctor_circles[i].severity +
+                                "<br><br><button style='width:80px; color: black'>Symptom</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addSymptom1("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"latestSymptom("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"displayDiagnosisHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px; color: black'>Diagnosis</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addDiagnosis("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"latestDiagnosis("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"displayDiagnosisHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px; color: black'>Treatment</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addTreatment("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"latestTreatment("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"displayTreatmentHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px; color: black'>Medication</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addMedication("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"latestMedication("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"displayMedicationHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px;color:black'>Scanning</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addScan("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"latestScan("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"displayScanningHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button type=\"button\" onclick=\"displayAllPositionHistory("+ doctor_circles[i].position_doctor_id+")\" style='color:black'>All History</button><a> </a>"+
+                                "<br><br>"
+                        );
+                        BiggerRespiratory();
+                    }
+                    if(doctor_circles[i].image_type == "Reproductive"){
+                        $( "#log").empty();
+                        $("#log").css('color','black');
+                        $("#log").css('border-color','black');
+                        $("#log").css('border-style','solid');
+                        $( "#log" ).append("<b>Diagnosis type : </b>" +
+                                doctor_circles[i].image_type +
+                                " <br/><b>ICD number : </b>"+
+                                doctor_circles[i].icd +
+                                " <br/><b>Severity : </b>"+
+                                doctor_circles[i].severity +
+                                "<br><br><button style='width:80px; color: black'>Symptom</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addSymptom1("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"latestSymptom("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"displayDiagnosisHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px; color: black'>Diagnosis</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addDiagnosis("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"latestDiagnosis("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"displayDiagnosisHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px; color: black'>Treatment</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addTreatment("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"latestTreatment("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"displayTreatmentHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px; color: black'>Medication</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addMedication("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"latestMedication("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"displayMedicationHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px;color:black'>Medical Imaging</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addScan("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"latestScan("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"displayScanningHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button type=\"button\" onclick=\"displayAllPositionHistory("+ doctor_circles[i].position_doctor_id+")\" style='color:black'>All History</button><a> </a>"+
+                                "<br><br>"
+                        );
+                        BiggerReproductive();
+                    }
+                    if(doctor_circles[i].image_type == "Urinary"){
+                        $( "#log").empty();
+                        $("#log").css('color','black');
+                        $("#log").css('border-color','black');
+                        $("#log").css('border-style','solid');
+                        $( "#log" ).append("<b>Diagnosis type : </b>" +
+                                doctor_circles[i].image_type +
+                                " <br/><b>ICD number : </b>"+
+                                doctor_circles[i].icd +
+                                " <br/><b>Severity : </b>"+
+                                doctor_circles[i].severity +
+                                "<br><br><button style='width:80px; color: black'>Symptom</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addSymptom1("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"latestSymptom("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"displayDiagnosisHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px; color: black'>Diagnosis</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addDiagnosis("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"latestDiagnosis("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"displayDiagnosisHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px; color: black'>Treatment</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addTreatment("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"latestTreatment("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"displayTreatmentHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px; color: black'>Medication</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addMedication("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"latestMedication("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"displayMedicationHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px;color:black'>Medical Imaging</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addScan("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"latestScan("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"displayScanningHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button type=\"button\" onclick=\"displayAllPositionHistory("+ doctor_circles[i].position_doctor_id+")\" style='color:black'>All History</button><a> </a>"+
+                                "<br><br>"
+                        );
+                        BiggerUrinary();
+                    }
+                    if(doctor_circles[i].image_type == "Endocrine"){
+                        $( "#log").empty();
+                        $("#log").css('color','black');
+                        $("#log").css('border-color','black');
+                        $("#log").css('border-style','solid');
+                        $( "#log" ).append("<b>Diagnosis type : </b>" +
+                                doctor_circles[i].image_type +
+                                " <br/><b>ICD number : </b>"+
+                                doctor_circles[i].icd +
+                                " <br/><b>Severity : </b>"+
+                                doctor_circles[i].severity +
+                                "<br><br><button style='width:80px; color: black'>Symptom</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addSymptom1("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"latestSymptom("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"displayDiagnosisHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px; color: black'>Diagnosis</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addDiagnosis("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"latestDiagnosis("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"displayDiagnosisHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px; color: black'>Treatment</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addTreatment("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"latestTreatment("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"displayTreatmentHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px; color: black'>Medication</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addMedication("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"latestMedication("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"displayMedicationHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px;color:black'>Medical Imaging</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addScan("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"latestScan("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"displayScanningHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button type=\"button\" onclick=\"displayAllPositionHistory("+ doctor_circles[i].position_doctor_id+")\" style='color:black'>All History</button><a> </a>"+
+                                "<br><br>"
+                        );
+                        BiggerEndocrine();
+                    }
+                    if(doctor_circles[i].image_type == "Skin"){
+                        $( "#log").empty();
+                        $("#log").css('color','black');
+                        $("#log").css('border-color','black');
+                        $("#log").css('border-style','solid');
+                        $( "#log" ).append("<b>Diagnosis type : </b>" +
+                                doctor_circles[i].image_type +
+                                " <br/><b>ICD number : </b>"+
+                                doctor_circles[i].icd +
+                                " <br/><b>Severity : </b>"+
+                                doctor_circles[i].severity +
+                                "<br><br><button style='width:80px; color: black'>Symptom</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addSymptom1("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"latestSymptom("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"displayDiagnosisHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px; color: black'>Diagnosis</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addDiagnosis("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"latestDiagnosis("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\"  onclick=\"displayDiagnosisHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px; color: black'>Treatment</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addTreatment("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"latestTreatment("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"displayTreatmentHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px; color: black'>Medication</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addMedication("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"latestMedication("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"displayMedicationHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button style='width:80px;color:black'>Medical Imaging</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type=\"button\"  onclick=\"addScan("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Add</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"latestScan("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>Latest</button><a> </a>"+
+                                "<button type=\"button\" onclick=\"displayScanningHistory("+ doctor_circles[i].position_doctor_id+")\" style='width:70px;color:black'>History</button><a> </a>"+
+                                "<br><br><button type=\"button\" onclick=\"displayAllPositionHistory("+ doctor_circles[i].position_doctor_id+")\" style='color:black'>All History</button><a> </a>"+
+                                "<br><br>"
+                        );
+                        BiggerSkin();
+                    }
+                    flag = 0;
+                    break;
+                }else{
+                    flag = 1;
+                }
+            }
+            for (var j = 0; j< s_circles.length; j++) {
+                if (clickedX < s_circles[j].right && clickedX > s_circles[j].left && clickedY > s_circles[j].top && clickedY < s_circles[j].bottom) {
+                    $( "#log").empty();
+                    $("#log").css('color','black');
+                    $("#log").css('border-color','black');
+                    $("#log").css('border-style','solid');
+                    $( "#log" ).append("<h4><b> <center>Symptom Information </center> </b></h4>" +
+                            "<br/><b>Symptom position ID : </b>" +
+                            s_circles[j].s_position_id+
+                            "<br/><b>Symptom : </b>" +
+                            s_circles[j].description+
+                            " <br/><b>Severity : </b>"+
+                            s_circles[j].severity +
+                            " <br/><b>Last for days  From: </b>"+
+                            s_circles[j].start_time+
+                            "</br><b> To :</b>"+
+                            s_circles[j].end_time+
+                            "<br>"
+                    );
+
+
+                    flag = 0;
+                    break;
+                }
+            }
+            for (var k = 0; k < circles.length; k++) {
+                if (clickedX < circles[k].right && clickedX > circles[k].left && clickedY > circles[k].top && clickedY < circles[k].bottom) {
+                    console.log(circles[k]);
+                    $( "#log").empty();
+                    $("#log").css('color','black');
+                    $("#log").css('border-color','black');
+                    $("#log").css('border-style','solid');
+                    $( "#log" ).append("<h4><b> <center>Patient self Treatment/Medication Information </center> </b></h4>" +
+                            "<br/><b>Symptom : </b>" +
+                            circles[k].description+
+                            " <br/><b>Severity : </b>"+
+                            circles[k].severity +
+                            " <br/><b>Last for days  From: </b>"+
+                            circles[k].start_time+
+                            "</br><b> To :</b>"+
+                            circles[k].end_time+
+                            " <br/><b>Treatment method or medication taking: </b>"+
+                            circles[k].clinical_note+
+                            "<br/> <br/>"
+                    );
+
+
+                    flag = 0;
+                    break;
+                }
+            }
+            if(flag == 1){
+                $("#log").css('border','0px');
+                $( "#log").empty();
+                StandardTogether()
+            }
+            /****************************************************************************/
+            context.beginPath();
+            context.arc(posx, posy, 6, 0, 2 * Math.PI, false);
+            context.fillStyle = "#000000";
+            context.fill();
+
+        }
+        /*double click the circle, jump to the corresponding category */
+        $('#myCanvas').dblclick(function (e) {
+            var pos = getMousePos(canvas, e);
+            posx = pos.x;
+            posy = pos.y;
+            var clickedX = pos.x;
+            var clickedY = pos.y;
+            /*double click the circle, jump to the corresponding page */
+            for (var i = 0; i < doctor_circles.length; i++) {
+                if (clickedX < doctor_circles[i].right && clickedX > doctor_circles[i].left && clickedY > doctor_circles[i].top && clickedY < doctor_circles[i].bottom) {
+                    if (doctor_circles[i].image_type == 'Skeleton') {
+                        window.open("http://127.0.0.1:3000/together/Skeleton", "_self");
+                    }
+                    if (doctor_circles[i].image_type == "Muscular") {
+                        window.open("http://127.0.0.1:3000/together/Muscular", "_self");
+                    }
+                    if (doctor_circles[i].image_type == "Cardiovascular") {
+                        window.open("http://127.0.0.1:3000/together/Cardiovascular", "_self");
+                    }
+                    if (doctor_circles[i].image_type == "Digestive") {
+                        window.open("http://127.0.0.1:3000/together/Digestive", "_self");
+                    }
+                    if (doctor_circles[i].image_type == "Nervous") {
+                        window.open("http://127.0.0.1:3000/together/Nervous", "_self");
+                    }
+                    if (doctor_circles[i].image_type == "Immune") {
+                        window.open("http://127.0.0.1:3000/together/Immune", "_self");
+                    }
+                    if (doctor_circles[i].image_type == "Respiratory") {
+                        window.open("http://127.0.0.1:3000/together/Respiratory", "_self");
+                    }
+                    if (doctor_circles[i].image_type == "Reproductive") {
+                        window.open("http://127.0.0.1:3000/together/Reproductive", "_self");
+                    }
+                    if (doctor_circles[i].image_type == "Urinary") {
+                        window.open("http://127.0.0.1:3000/together/Urinary", "_self");
+                    }
+                    if (doctor_circles[i].image_type == "Endocrine") {
+                        window.open("http://127.0.0.1:3000/together/Endocrine", "_self");
+                    }
+                    if (doctor_circles[i].image_type == "Skin") {
+                        window.open("http://127.0.0.1:3000/together/Skin", "_self");
+                    }
+                }
+
+
+            }/* select*/
+        });
+        /********************************************************/
+        /*------click addDiagnosis,latest button--------*/
+
+        var addSymptom1Element=function(doctor_circle_id){
+            console.log(doctor_circle_id);
+            //document.getElementById("dialogBox").innerHTML="";
+            //document.getElementById("dialogBox").style.backgroundColor="#00CC33";
+            var diagnosisTextTitle="<h4>Add Symptom Position<h4>";
+            var diagnosisTestForm="<form action='/SymptomPositionPost' method='post' role=\"form\">"+
+                    "<div class=\"form-group\"><label>Please adding symptom position ID</label><textarea class=\"form-control\" rows=\"1\"type=\"text\" value='' name='dialogSymptom_id' id=\"dialogSymptom_id\"> </textarea></div>"+
+
+                    "<input type='hidden' name='doctor_circleId' value='"+doctor_circle_id+"'>"+
+                    "<button type=\"submit\" class=\"btn btn-default\">Submit</button>"+
+                    "<button type='button' class='btn btn-default' data-dismiss='modal' style='float:right'>Close</button>"+
+                    "</form>";
+            //document.getElementById("dialogBox").innerHTML=diagnosisTextTitle+diagnosisTestForm;
+            $("#backcolor").css("background-color", 'white');
+            $("#myModal").find("#modalHeader").html(diagnosisTextTitle).end().find("#modalBody").html(diagnosisTestForm).end().modal('toggle');
+        };
+        var addSymptom1=function(doctor_circle_id){
+            addSymptom1Element(doctor_circle_id);
+            //document.getElementById('dialogBox').style.display="block";
+        };
+        var addDiagnosisElement=function(doctor_circle_id){
+            console.log(doctor_circle_id);
+            //document.getElementById("dialogBox").innerHTML="";
+            //document.getElementById("dialogBox").style.backgroundColor="#00CC33";
+            var diagnosisTextTitle="<h4>Add Diagnosis<h4>";
+            var diagnosisTestForm="<form action='/diagnosisPost' method='post' role=\"form\">"+
+                    "<div calss=\"form-group\"><label>ICD</label><select class=\"form-control\" type=\"text\" name='dialogdiagnosisicd' id=\"dialogIcd\"><option>G80</option><option>I20</option><option>I22</option><option>I27</option><option>J34</option><option>K00</option><option>K35</option><option>K55</option><option>K59</option><option>K65</option><option>M00</option><option>M01</option><option>M60</option><option>B35.1</option><option>S22</option></select></div>" +
+                    "<div class=\"form-group\"><label>Severity</label><select class=\"form-control\" type=\"text\" value='' name='dialogdiagnosisseverity' id=\"dialogDiagnosisSeverity\"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>"+
+                    "<div class=\"form-group\"><label>Symptom</label><textarea class=\"form-control\" rows=\"3\" type=\"text\" name='dialogdiagnosissymptom' id=\"dialogDiagnosisSymptom\"></textarea></div>" +
+                    "<div class=\"form-group\"><label> Diagnosis Date</label>  <textarea class=\"form-control\" rows=\"1\"type=\"text\" value='' name='dialogdiagnosisstart_time' id=\"dialogDiagnosisStart_time\"></textarea> </div>"+
+                    "<div class=\"form-group\"><label>Clinical Note</label><textarea class=\"form-control\" rows=\"3\" type=\"text\" name='dialogdiagnosisnote' id=\"dialogDiagnosisNote\"></textarea></div>" +
+                    "<input type='hidden' name='doctor_circleId' value='"+doctor_circle_id+"'>"+
+                    "<input type='hidden' name='dialogdiagnosisend_time' value='"+20161010+"'>"+
+                    "<button type=\"submit\" class=\"btn btn-default\">Submit</button>"+
+                    "<button type='button' class='btn btn-default' data-dismiss='modal' style='float:right'>Close</button>"+
+                    "</form>";
+            //document.getElementById("dialogBox").innerHTML=diagnosisTextTitle+diagnosisTestForm;
+            $("#backcolor").css("background-color", 'white');
+            $("#myModal").find("#modalHeader").html(diagnosisTextTitle).end().find("#modalBody").html(diagnosisTestForm).end().modal('toggle');
+        };
+        var addDiagnosis=function(doctor_circle_id){
+            addDiagnosisElement(doctor_circle_id);
+            //document.getElementById('dialogBox').style.display="block";
+        };
+        var addTreatmentElement=function(doctor_circle_id){
+            console.log(doctor_circle_id);
+            //document.getElementById("dialogBox").innerHTML="";
+            //document.getElementById("dialogBox").style.backgroundColor="#6666FF";
+            var treatmentTextTitle="<h4>Add Treatment<h4>";
+            var treatmentTestForm="<form action='/treatmentPost' method='post' role=\"form\">"+
+                    "<div calss=\"form-group\"><label>Treatment Type</label><select class=\"form-control\" type=\"text\" name='dialogtreatmentname' id=\"dialogTreatmentName\"><option>Hormone Therapy</option><option>Surgery</option><option>Therapy</option><option>Chemotherapy</option><option>Immunotherapy</option><option>Targeted Therapy</option></select></div>" +
+                    "<div class=\"form-group\"><label>Last for days From:</label>  <textarea class=\"form-control\" rows=\"1\"type=\"text\" value='' name='dialogtreatmentstart_time' id=\"dialogTreatmentStart_time\"></textarea> </div>"+
+                    "<div class=\"form-group\"><label>To:</label><textarea class=\"form-control\" rows=\"1\"type=\"text\" value='' name='dialogtreatmentend_time' id=\"dialogTreatmentEnd_time\"> </textarea></div>"+
+                    "<div class=\"form-group\"><label>Clinical Note</label><textarea class=\"form-control\" rows=\"3\" type=\"text\" name='dialogtreatmentnote' id=\"dialogTreatmentNote\"></textarea></div>" +
+                    "<input type='hidden' name='doctor_circleId' value='"+doctor_circle_id+"'>"+
+                    "<button type=\"submit\" class=\"btn btn-default\">Submit</button>"+
+                    "<button type='button' class='btn btn-default' data-dismiss='modal' style='float:right'>Close</button>"+
+                    "</form>";
+            //document.getElementById("dialogBox").innerHTML=treatmentTextTitle+treatmentTestForm;
+            $("#backcolor").css("background-color", 'white');
+            $("#myModal").find("#modalHeader").html(treatmentTextTitle).end().find("#modalBody").html(treatmentTestForm).end().modal('toggle');
+        };
+        var addTreatment=function(doctor_circle_id){
+            addTreatmentElement(doctor_circle_id);
+            //document.getElementById('dialogBox').style.display="block";
+        };
+        var addMedicationElement=function(doctor_circle_id){
+            console.log(doctor_circle_id);
+            //document.getElementById("dialogBox").innerHTML="";
+            //document.getElementById("dialogBox").style.backgroundColor="orange";
+            var medicationTextTitle="<h4>Add Medication/Drug<h4><hr>";
+            var medicationTestForm="<form action='/medicationPost' method='post' role=\"form\">"+
+                    "<div calss=\"form-group\"><label>Medication/Drug Name</label><textarea class=\"form-control\" type=\"text\" name='dialogmedicationname' id=\"dialogMedicationDrugName\"></textarea></div>" +
+                    "<div class=\"form-group\"><label>Dosage</label><textarea class=\"form-control\" rows=\"3\" type=\"text\" name='dialogmedicationdosage' id=\"dialogMedicationDosage\"></textarea></div>" +
+                    "<div class=\"form-group\"><label>Frequency</label><textarea class=\"form-control\" rows=\"3\" type=\"text\" name='dialogmedicationfrequency' id=\"dialogMedicationFrequency\"></textarea></div>" +
+                    "<div class=\"form-group\"><label>Last for days From:</label>  <textarea class=\"form-control\" rows=\"1\"type=\"text\" value='' name='dialogmedicationstart_time' id=\"dialogMedicationStart_time\"></textarea> </div>"+
+                    "<div class=\"form-group\"><label>To:</label><textarea class=\"form-control\" rows=\"1\"type=\"text\" value='' name='dialogmedicationend_time' id=\"dialogMedicationEnd_time\"> </textarea></div>"+
+                    "<div class=\"form-group\"><label>Clinical Note</label><textarea class=\"form-control\" rows=\"3\" type=\"text\" name='dialogmedicationtnote' id=\"dialogMedicationNote\"></textarea></div>" +
+                    "<input type='hidden' name='doctor_circleId' value='"+doctor_circle_id+"'>"+
+                    "<button type=\"submit\" class=\"btn btn-default\">Submit</button>"+
+                    "<button type='button' class='btn btn-default' data-dismiss='modal' style='float:right'>Close</button>"+
+                    "</form>";
+            //document.getElementById("dialogBox").innerHTML=medicationTextTitle+medicationTestForm;
+            $("#backcolor").css("background-color", 'white');
+            $("#myModal").find("#modalHeader").html(medicationTextTitle).end().find("#modalBody").html(medicationTestForm).end().modal('toggle');
+        };
+        var addMedication=function(doctor_circle_id){
+            addMedicationElement(doctor_circle_id);
+            //document.getElementById('dialogBox').style.display="block";
+        };
+        var addScanElement=function(circle_id){
+            console.log(circle_id);
+            // document.getElementById("dialogBox").innerHTML="";
+            //document.getElementById("dialogBox").style.backgroundColor="#00B7FF";
+            var scanTextTitle="<h4>Add Scan Note<h4>";
+            var scanTestForm="<form action='/scanPost' method='post' enctype=\"multipart/form-data\">"+
+                    "<div class=\"form-group\"><label>Upload Scan Image</label><input type='file' name='image'></div>" +
+                    "<div class=\"form-group\"><label>Clinical Note</label><textarea class=\"form-control\" rows=\"3\" type=\"text\" name='dialogscannote' id=\"dialogScanNote\"></textarea></div>" +
+                    "<input type='hidden' name='circleId' value='"+circle_id+"'>"+
+                    "<button type=\"submit\" class=\"btn btn-default\">Submit</button>"+
+                    "<button type='button' class='btn btn-default' data-dismiss='modal' style='float:right'>Close</button>"+
+                    "</form>";
+            //document.getElementById("dialogBox").innerHTML=scanTextTitle+scanTestForm;
+            $("#backcolor").css("background-color", 'white');
+            $("#myModal").find("#modalHeader").html(scanTextTitle).end().find("#modalBody").html(scanTestForm).end().modal('toggle');
+        };
+        var addScan=function(circle_id){
+            addScanElement(circle_id);
+            //document.getElementById('dialogBox').style.display="block";
+        };
+        var dialogClose=function(){
+            document.getElementById('dialogBox').style.display="none";
+        };
+        var latestSymptom = function(doctor_circle_id){
+            var link = "/detail/type=diagnosis/position="+doctor_circle_id;
+            //document.getElementById('dialogBox').style.display="none";
+            //document.getElementById("dialogBox").style.backgroundColor="#00CC33";
+            $("#backcolor").css("background-color", 'white');
+            $.get(link,function(data,status){
+                //var inner = "<p><strong>ICD_id :  </strong>"+data.ICD_id +
+                //"<br><p><strong> Symptom :  </strong>" + data.Symptom +
+                //"<br><p><strong> Severity :  </strong>" + data.Severity +
+                //"<br><p><strong> Clinical Note :  </strong>" + data.Clinical_note + "</p>";
+                //document.getElementById('dialogBox').innerHTML = inner;
+                //document.getElementById('dialogBox').style.display="block";
+                var inner = "<table class='table'><tbody>"+
+                        "<tr><td>Symptom</td><td>"+data.Symptom+"</td></tr>" +
+                        "<tr><td>Severity</td><td>"+data.Severity+"</td></tr>" +
+                        "</tbody></table>";
+                inner += "<div class='modal-footer'>"+
+                        "<button type='button' class='btn btn-default' data-dismiss='modal' style='float:right'>Close</button>"+
+                        "</div>";
+                $("#myModal").find("#modalHeader").html("Latest Symptom").end().find("#modalBody").html(inner).end().modal('toggle');
+            });
+        };
+        var latestDiagnosis = function(doctor_circle_id){
+            var link = "/detail/type=diagnosis/position="+doctor_circle_id;
+            //document.getElementById('dialogBox').style.display="none";
+            //document.getElementById("dialogBox").style.backgroundColor="#00CC33";
+            $("#backcolor").css("background-color", 'white');
+            $.get(link,function(data,status){
+                //var inner = "<p><strong>ICD_id :  </strong>"+data.ICD_id +
+                //"<br><p><strong> Symptom :  </strong>" + data.Symptom +
+                //"<br><p><strong> Severity :  </strong>" + data.Severity +
+                //"<br><p><strong> Clinical Note :  </strong>" + data.Clinical_note + "</p>";
+                //document.getElementById('dialogBox').innerHTML = inner;
+                //document.getElementById('dialogBox').style.display="block";
+                var inner = "<table class='table'><tbody>"+
+                        "<tr><td>ICD_id</td><td>"+data.ICD_id+"</td></tr>" +
+                        "<tr><td>Symptom</td><td>"+data.Symptom+"</td></tr>" +
+                        "<tr><td>Severity</td><td>"+data.Severity+"</td></tr>" +
+                        "<tr><td>Clinical Note</td><td>"+data.Clinical_note+"</td></tr>" +
+                        "</tbody></table>";
+                inner += "<div class='modal-footer'>"+
+                        "<button type='button' class='btn btn-default' data-dismiss='modal' style='float:right'>Close</button>"+
+                        "</div>";
+                $("#myModal").find("#modalHeader").html("Latest Diagnosis").end().find("#modalBody").html(inner).end().modal('toggle');
+            });
+        };
+        var latestTreatment = function(circle_id){
+            var link = "/detail/type=treatment/position="+circle_id;
+            //document.getElementById('dialogBox').style.display="none";
+            //document.getElementById("dialogBox").style.backgroundColor="#6666FF";
+            $("#backcolor").css("background-color", 'white');
+            $.get(link,function(data,status){
+                //var inner = "<p><strong>Treatment Name :  </strong>"+data.Treatment_name +
+                //        "<br><p><strong> Clinical Note :  </strong>" + data.Clinical_note + "</p>";
+                //document.getElementById('dialogBox').innerHTML = inner;
+                //document.getElementById('dialogBox').style.display="block";
+                var inner = "<table class='table'><tbody>"+
+                        "<tr><td>Treatment Name</td><td>"+data.Treatment_name+"</td></tr>" +
+                        "<tr><td>Clinical Note</td><td>"+data.Clinical_note+"</td></tr>" +
+                        "</tbody></table>";
+                inner += "<div class='modal-footer'>"+
+                        "<button type='button' class='btn btn-default' data-dismiss='modal' style='float:right'>Close</button>"+
+                        "</div>";
+                $("#myModal").find("#modalHeader").html("Latest Treatment").end().find("#modalBody").html(inner).end().modal('toggle');
+            });
+        };
+        var latestMedication = function(circle_id){
+            var link = "/detail/type=medication/position="+circle_id;
+            //document.getElementById('dialogBox').style.display="none";
+            //document.getElementById("dialogBox").style.backgroundColor="orange";
+            $("#backcolor").css("background-color", 'white');
+            $.get(link,function(data,status){
+                //var inner = "<p><strong>Medication Name :  </strong>"+data.Medication_name +
+                //        "<br><p><strong> Dosage :  </strong>" + data.Dosage +
+                //        "<br><p><strong> Frequency :  </strong>" + data.Frequency +
+                //        "<br><p><strong> Clinical Note :  </strong>" + data.Clinical_note + "</p>";
+                //document.getElementById('dialogBox').innerHTML = inner;
+                //document.getElementById('dialogBox').style.display="block";
+                var inner = "<table class='table'><tbody>"+
+                        "<tr><td>Medication Name</td><td>"+data.Medication_name+"</td></tr>" +
+                        "<tr><td>Dosage</td><td>"+data.Dosage+"</td></tr>" +
+                        "<tr><td>Frequency</td><td>"+data.Frequency+"</td></tr>" +
+                        "<tr><td>Clinical Note</td><td>"+data.Clinical_note+"</td></tr>" +
+                        "</tbody></table>";
+                inner += "<div class='modal-footer'>"+
+                        "<button type='button' class='btn btn-default' data-dismiss='modal' style='float:right'>Close</button>"+
+                        "</div>";
+                $("#myModal").find("#modalHeader").html("Latest Medication").end().find("#modalBody").html(inner).end().modal('toggle');
+            });
+        };
+        var latestScan = function(circle_id){
+            var link = "/detail/type=scanning/position="+circle_id;
+            //document.getElementById("dialogBox").style.back="";
+            //document.getElementById('dialogBox').style.display="none";
+            //document.getElementById("dialogBox").style.backgroundColor="#00B7FF";
+            $("#backcolor").css("background-color", 'white');
+            $.get(link,function(data,status){
+                //var inner = "<p><strong>Clinical Note :  </strong>"+data.Clinical_note+ "</p>" +" <br>" + "<img src="+data.Image_url+" />";
+                //document.getElementById('dialogBox').innerHTML = inner;
+                //document.getElementById('dialogBox').style.display="block";
+                var inner = "<div><table class='table'><tbody>"+
+                        "<tr><td>Clinical Note</td><td>"+data.Clinical_note+"</td></tr>" +
+                        "</tbody></table></div>";
+                inner += "<div>"+
+                        "<img src='" + data.Image_url + "' style='width:520px;height:470px' >" +
+                        "</div>";
+                inner += "<div class='modal-footer'>"+
+                        "<button type='button' class='btn btn-default' data-dismiss='modal' style='float:right'>Close</button>"+
+                        "</div>";
+                $("#myModal").find("#modalHeader").html("Latest Scanning").end().find("#modalBody").html(inner).end().modal('toggle');
+
+            });
+        };
+        /******************************************************************************************************/
+        var history_record = function(id, surgery, medication, blood_test){
+            this.id = id;
+            this.surgery = surgery;
+            this.medication = medication;
+            this.blood_test = blood_test;
+        }
+        function historyRecords(id, surgery, medication, blood_Test){
+            var historyRecord = new history_record(id, surgery, medication, blood_Test);
+            history_records.push(historyRecord);
+        }
+        /******************************************************************************************************/
+        <% var i=1; %>
+        <% pp.forEach(function(item){ %>
+        /* map each value of each field to table */
+        historyRecords('<%= item.id %>', '<%= item.surgery %>', '<%= item.medication %>','<%= item.blood_test %>');
+        <% }) %>
+        /******************************************************************************************************/
+        /* display each medication event history */
+        function displayAllPositionHistory(pid){
+            window.open("http://127.0.0.1:3000/history/type=all/position="+pid,"_self");
+        }
+        function displayDiagnosisHistory(pid){
+            window.open("http://127.0.0.1:3000/history/type=diagnosis/position="+pid,"_self");
+        }
+        function displayTreatmentHistory(pid){
+            window.open("http://127.0.0.1:3000/history/type=treatment/position="+pid,"_self");
+        }
+        function displayMedicationHistory(pid){
+            window.open("http://127.0.0.1:3000/history/type=medication/position="+pid,"_self");
+        }
+        function displayScanningHistory(pid){
+            window.open("http://127.0.0.1:3000/history/type=scanning/position="+pid,"_self");
+        }
+        /******************************************************************************************************/
+        /* display each system in together page if select: change window open*/
+        function displayTogether(){
+            window.open("http://127.0.0.1:3000/together/together", "_self");
+        }
+        function displaySkeleton(){
+            window.open("http://127.0.0.1:3000/together/Skeleton", "_self");
+        }
+        function displayMuscle(){
+            window.open("http://127.0.0.1:3000/together/Muscular", "_self");
+        }
+        function displayCardiovascular(){
+            window.open("http://127.0.0.1:3000/together/Cardiovascular", "_self");
+        }
+        function displayDigestive(){
+            window.open("http://127.0.0.1:3000/together/Digestive", "_self");
+        }
+        function displayNervous(){
+            window.open("http://127.0.0.1:3000/together/Nervous", "_self");
+        }
+        function displayImmune(){
+            window.open("http://127.0.0.1:3000/together/Immune", "_self");
+        }
+        function displayRespiratory(){
+            window.open("http://127.0.0.1:3000/together/Respiratory", "_self");
+        }
+        function displayReproductive(){
+            window.open("http://127.0.0.1:3000/together/Reproductive", "_self");
+        }
+        function displayUrinary(){
+            window.open("http://127.0.0.1:3000/together/Urinary", "_self");
+        }
+        function displayEndocrine(){
+            window.open("http://127.0.0.1:3000/together/Endocrine", "_self");
+        }
+        function displaySkin(){
+            window.open("http://127.0.0.1:3000/together/Skin", "_self");
+        }
+        /*********************************************************/
+        /* bigger each system when checking bodyCategory in URL*/
+        <% if('together' == bodyCategory) {%>
+        StandardTogether();
+        TogetherSelect();
+        <%}%>
+        <% if('Skeleton' == bodyCategory) {%>
+        BiggerSkeletal();
+        SkeletalSelect();
+        <%}%>
+        <% if('Muscular' == bodyCategory) {%>
+        BiggerMuscular();
+        MuscularSelect();
+        <%}%>
+        <% if('Cardiovascular' == bodyCategory) {%>
+        BiggerCardiovascular();
+        CardiovascularSelect();
+        <%}%>
+        <% if('Digestive' == bodyCategory) {%>
+        BiggerDigestive();
+        DigestiveSelect();
+        <%}%>
+        <% if('Nervous' == bodyCategory) {%>
+        BiggerNervous();
+        NervousSelect();
+        <%}%>
+        <% if('Immune' == bodyCategory) {%>
+        BiggerImmune();
+        ImmuneSelect();
+        <%}%>
+        <% if('Respiratory' == bodyCategory) {%>
+        BiggerRespiratory();
+        RespiratorySelect();
+        <%}%>
+        <% if('Reproductive' == bodyCategory) {%>
+        BiggerReproductive();
+        ReproductiveSelect();
+        <%}%>
+        <% if('Urinary' == bodyCategory) {%>
+        BiggerUrinary();
+        UrinarySelect();
+        <%}%>
+        <% if('Endocrine' == bodyCategory) {%>
+        BiggerEndocrine();
+        EndocrineSelect();
+        <%}%>
+        <% if('Skin' == bodyCategory) {%>
+        BiggerSkin();
+        SkinSelect();
+        <%}%>
+        /*********************************************************/
+        function TogetherSelect(){
+            var x = document.getElementById("healthcategory");
+            var option1 = document.createElement("option");
+            option1.text = "Skeleton";
+            var option2 = document.createElement("option");
+            option2.text = "Muscular";
+            var option3 = document.createElement("option");
+            option3.text = "Cardiovascular";
+            var option4 = document.createElement("option");
+            option4.text = "Digestive";
+            var option5 = document.createElement("option");
+            option5.text = "Nervous";
+            var option6 = document.createElement("option");
+            option6.text = "Immune";
+            var option7 = document.createElement("option");
+            option7.text = "Respiratory";
+            var option8 = document.createElement("option");
+            option8.text = "Reproductive";
+            var option9 = document.createElement("option");
+            option9.text = "Urinary";
+            var option10 = document.createElement("option");
+            option10.text = "Endocrine";
+            var option11 = document.createElement("option");
+            option11.text = "Skin";
+
+            x.add(option1);
+            x.add(option2);
+            x.add(option3);
+            x.add(option4);
+            x.add(option5);
+            x.add(option6);
+            x.add(option7);
+            x.add(option8);
+            x.add(option9);
+            x.add(option10);
+            x.add(option11);
+        }
+        function SkeletalSelect(){
+            var x = document.getElementById("healthcategory");
+            var option1 = document.createElement("option");
+            option1.text = "Skeleton";
+            x.add(option1);
+        }
+        function MuscularSelect(){
+            var x = document.getElementById("healthcategory");
+            var option2 = document.createElement("option");
+            option2.text = "Muscular";
+            x.add(option2);
+        }
+        function CardiovascularSelect(){
+            var x = document.getElementById("healthcategory");
+            var option3 = document.createElement("option");
+            option3.text = "Cardiovascular";
+            x.add(option3);
+        }
+        function DigestiveSelect(){
+            var x = document.getElementById("healthcategory");
+            var option4 = document.createElement("option");
+            option4.text = "Digestive";
+            x.add(option4);
+        }
+        function NervousSelect(){
+            var x = document.getElementById("healthcategory");
+            var option5 = document.createElement("option");
+            option5.text = "Nervous";
+            x.add(option5);
+        }
+        function ImmuneSelect(){
+            var x = document.getElementById("healthcategory");
+            var option6 = document.createElement("option");
+            option6.text = "Immune";
+            x.add(option6);
+        }
+        function RespiratorySelect(){
+            var x = document.getElementById("healthcategory");
+            var option7 = document.createElement("option");
+            option7.text = "Respiratory";
+            x.add(option7);
+        }
+        function ReproductiveSelect(){
+            var x = document.getElementById("healthcategory");
+            var option8 = document.createElement("option");
+            option8.text = "Reproductive";
+            x.add(option8);
+        }
+        function UrinarySelect(){
+            var x = document.getElementById("healthcategory");
+            var option9 = document.createElement("option");
+            option9.text = "Urinary";
+            x.add(option9);
+        }
+        function EndocrineSelect(){
+            var x = document.getElementById("healthcategory");
+            var option10 = document.createElement("option");
+            option10.text = "Endocrine";
+            x.add(option10);
+        }
+        function SkinSelect(){
+            var x = document.getElementById("healthcategory");
+            var option11 = document.createElement("option");
+            option11.text = "Skin";
+            x.add(option11);
+        }
+        function ReproductiveSelect(){
+            var x = document.getElementById("healthcategory");
+            var option8 = document.createElement("option");
+            option8.text = "Reproductive";
+            x.add(option8);
+        }
+        function StandardTogether() {
+            $("#1").css('opacity', '1');
+            $("#2").css('opacity', '1');
+            $("#3").css('opacity', '1');
+            $("#4").css('opacity', '1');
+            $("#5").css('opacity', '1');
+            $("#6").css('opacity', '1');
+            $("#7").css('opacity', '1');
+            $("#8").css('opacity', '1');
+            $("#9").css('opacity', '1');
+            $("#10").css('opacity', '1');
+            $("#11").css('opacity', '1');
+            $("#12").css('opacity', '1');
+            $("#1").css('font-size', '20px');
+            $("#2").css('font-size', '20px');
+            $("#3").css('font-size', '20px');
+            $("#4").css('font-size', '20px');
+            $("#5").css('font-size', '20px');
+            $("#6").css('font-size', '20px');
+            $("#7").css('font-size', '20px');
+            $("#8").css('font-size', '20px');
+            $("#9").css('font-size', '20px');
+            $("#10").css('font-size', '20px');
+            $("#11").css('font-size', '20px');
+            $("#12").css('font-size', '20px');
+        }
+        function BiggerSkeletal(){
+            $("#1").css('opacity', '0.5');
+            $("#3").css('opacity', '0.5');
+            $("#4").css('opacity', '0.5');
+            $("#5").css('opacity', '0.5');
+            $("#6").css('opacity', '0.5');
+            $("#7").css('opacity', '0.5');
+            $("#8").css('opacity', '0.5');
+            $("#9").css('opacity', '0.5');
+            $("#10").css('opacity', '0.5');
+            $("#11").css('opacity', '0.5');
+            $("#12").css('opacity', '0.5');
+            $("#1").css('font-size', '20px');
+            $("#3").css('font-size', '20px');
+            $("#4").css('font-size', '20px');
+            $("#5").css('font-size', '20px');
+            $("#6").css('font-size', '20px');
+            $("#7").css('font-size', '20px');
+            $("#8").css('font-size', '20px');
+            $("#9").css('font-size', '20px');
+            $("#10").css('font-size', '20px');
+            $("#11").css('font-size', '20px');
+            $("#12").css('font-size', '20px');
+            $("#2").css('opacity', '1');
+            $("#2").css('font-size', '25px');
+        }
+        function BiggerMuscular(){
+            $("#1").css('opacity', '0.5');
+            $("#2").css('opacity', '0.5');
+            $("#4").css('opacity', '0.5');
+            $("#5").css('opacity', '0.5');
+            $("#6").css('opacity', '0.5');
+            $("#7").css('opacity', '0.5');
+            $("#8").css('opacity', '0.5');
+            $("#9").css('opacity', '0.5');
+            $("#10").css('opacity', '0.5');
+            $("#11").css('opacity', '0.5');
+            $("#12").css('opacity', '0.5');
+            $("#1").css('font-size', '20px');
+            $("#2").css('font-size', '20px');
+            $("#4").css('font-size', '20px');
+            $("#5").css('font-size', '20px');
+            $("#6").css('font-size', '20px');
+            $("#7").css('font-size', '20px');
+            $("#8").css('font-size', '20px');
+            $("#9").css('font-size', '20px');
+            $("#10").css('font-size', '20px');
+            $("#11").css('font-size', '20px');
+            $("#12").css('font-size', '20px');
+            $("#3").css('opacity', '1');
+            $("#3").css('font-size', '25px');
+        }
+        function BiggerCardiovascular(){
+            $("#1").css('opacity', '0.5');
+            $("#2").css('opacity', '0.5');
+            $("#3").css('opacity', '0.5');
+            $("#5").css('opacity', '0.5');
+            $("#6").css('opacity', '0.5');
+            $("#7").css('opacity', '0.5');
+            $("#8").css('opacity', '0.5');
+            $("#9").css('opacity', '0.5');
+            $("#10").css('opacity', '0.5');
+            $("#11").css('opacity', '0.5');
+            $("#12").css('opacity', '0.5');
+            $("#1").css('font-size', '20px');
+            $("#2").css('font-size', '20px');
+            $("#3").css('font-size', '20px');
+            $("#5").css('font-size', '20px');
+            $("#6").css('font-size', '20px');
+            $("#7").css('font-size', '20px');
+            $("#8").css('font-size', '20px');
+            $("#9").css('font-size', '20px');
+            $("#10").css('font-size', '20px');
+            $("#11").css('font-size', '20px');
+            $("#12").css('font-size', '20px');
+            $("#4").css('opacity', '1');
+            $("#4").css('font-size', '25px');
+        }
+        function BiggerDigestive(){
+            $("#1").css('opacity', '0.5');
+            $("#2").css('opacity', '0.5');
+            $("#3").css('opacity', '0.5');
+            $("#4").css('opacity', '0.5');
+            $("#6").css('opacity', '0.5');
+            $("#7").css('opacity', '0.5');
+            $("#8").css('opacity', '0.5');
+            $("#9").css('opacity', '0.5');
+            $("#10").css('opacity', '0.5');
+            $("#11").css('opacity', '0.5');
+            $("#12").css('opacity', '0.5');
+            $("#1").css('font-size', '20px');
+            $("#2").css('font-size', '20px');
+            $("#3").css('font-size', '20px');
+            $("#4").css('font-size', '20px');
+            $("#6").css('font-size', '20px');
+            $("#7").css('font-size', '20px');
+            $("#8").css('font-size', '20px');
+            $("#10").css('font-size', '20px');
+            $("#11").css('font-size', '20px');
+            $("#12").css('font-size', '20px');
+            $("#5").css('opacity', '1');
+            $("#5").css('font-size', '25px');
+        }
+        function BiggerNervous(){
+            $("#1").css('opacity', '0.5');
+            $("#2").css('opacity', '0.5');
+            $("#3").css('opacity', '0.5');
+            $("#4").css('opacity', '0.5');
+            $("#5").css('opacity', '0.5');
+            $("#7").css('opacity', '0.5');
+            $("#8").css('opacity', '0.5');
+            $("#9").css('opacity', '0.5');
+            $("#10").css('opacity', '0.5');
+            $("#11").css('opacity', '0.5');
+            $("#12").css('opacity', '0.5');
+            $("#1").css('font-size', '20px');
+            $("#2").css('font-size', '20px');
+            $("#3").css('font-size', '20px');
+            $("#4").css('font-size', '20px');
+            $("#5").css('font-size', '20px');
+            $("#7").css('font-size', '20px');
+            $("#8").css('font-size', '20px');
+            $("#9").css('font-size', '20px');
+            $("#10").css('font-size', '20px');
+            $("#11").css('font-size', '20px');
+            $("#12").css('font-size', '20px');
+            $("#6").css('opacity', '1');
+            $("#6").css('font-size', '25px');
+        }
+        function BiggerImmune(){
+            $("#1").css('opacity', '0.5');
+            $("#2").css('opacity', '0.5');
+            $("#3").css('opacity', '0.5');
+            $("#4").css('opacity', '0.5');
+            $("#5").css('opacity', '0.5');
+            $("#6").css('opacity', '0.5');
+            $("#7").css('opacity', '0.5');
+            $("#8").css('opacity', '0.5');
+            $("#9").css('opacity', '0.5');
+            $("#10").css('opacity', '0.5');
+            $("#11").css('opacity', '0.5');
+            $("#12").css('opacity', '0.5');
+            $("#1").css('font-size', '20px');
+            $("#2").css('font-size', '20px');
+            $("#3").css('font-size', '20px');
+            $("#4").css('font-size', '20px');
+            $("#5").css('font-size', '20px');
+            $("#6").css('font-size', '20px');
+            $("#8").css('font-size', '20px');
+            $("#9").css('font-size', '20px');
+            $("#10").css('font-size', '20px');
+            $("#11").css('font-size', '20px');
+            $("#12").css('font-size', '20px');
+            $("#7").css('opacity', '1');
+            $("#7").css('font-size', '25px');
+        }
+        function BiggerRespiratory(){
+            $("#1").css('opacity', '0.5');
+            $("#2").css('opacity', '0.5');
+            $("#3").css('opacity', '0.5');
+            $("#4").css('opacity', '0.5');
+            $("#5").css('opacity', '0.5');
+            $("#6").css('opacity', '0.5');
+            $("#7").css('opacity', '0.5');
+            $("#8").css('opacity', '0.5');
+            $("#9").css('opacity', '0.5');
+            $("#10").css('opacity', '0.5');
+            $("#11").css('opacity', '0.5');
+            $("#12").css('opacity', '0.5');
+            $("#1").css('font-size', '20px');
+            $("#2").css('font-size', '20px');
+            $("#3").css('font-size', '20px');
+            $("#4").css('font-size', '20px');
+            $("#5").css('font-size', '20px');
+            $("#6").css('font-size', '20px');
+            $("#7").css('font-size', '20px');
+            $("#9").css('font-size', '20px');
+            $("#10").css('font-size', '20px');
+            $("#11").css('font-size', '20px');
+            $("#12").css('font-size', '20px');
+            $("#8").css('opacity', '1');
+            $("#8").css('font-size', '25px');
+        }
+        function BiggerReproductive(){
+            $("#1").css('opacity', '0.5');
+            $("#2").css('opacity', '0.5');
+            $("#3").css('opacity', '0.5');
+            $("#4").css('opacity', '0.5');
+            $("#5").css('opacity', '0.5');
+            $("#6").css('opacity', '0.5');
+            $("#7").css('opacity', '0.5');
+            $("#8").css('opacity', '0.5');
+            $("#10").css('opacity', '0.5');
+            $("#11").css('opacity', '0.5');
+            $("#12").css('opacity', '0.5');
+            $("#1").css('font-size', '20px');
+            $("#2").css('font-size', '20px');
+            $("#3").css('font-size', '20px');
+            $("#4").css('font-size', '20px');
+            $("#5").css('font-size', '20px');
+            $("#6").css('font-size', '20px');
+            $("#7").css('font-size', '20px');
+            $("#8").css('font-size', '20px');
+            $("#10").css('font-size', '20px');
+            $("#11").css('font-size', '20px');
+            $("#12").css('font-size', '20px');
+            $("#9").css('opacity', '1');
+            $("#9").css('font-size', '25px');
+        }
+        function BiggerUrinary(){
+            $("#1").css('opacity', '0.5');
+            $("#2").css('opacity', '0.5');
+            $("#3").css('opacity', '0.5');
+            $("#4").css('opacity', '0.5');
+            $("#5").css('opacity', '0.5');
+            $("#6").css('opacity', '0.5');
+            $("#7").css('opacity', '0.5');
+            $("#8").css('opacity', '0.5');
+            $("#9").css('opacity', '0.5');
+            $("#11").css('opacity', '0.5');
+            $("#12").css('opacity', '0.5');
+            $("#1").css('font-size', '20px');
+            $("#2").css('font-size', '20px');
+            $("#3").css('font-size', '20px');
+            $("#4").css('font-size', '20px');
+            $("#5").css('font-size', '20px');
+            $("#6").css('font-size', '20px');
+            $("#7").css('font-size', '20px');
+            $("#8").css('font-size', '20px');
+            $("#9").css('font-size', '20px');
+            $("#11").css('font-size', '20px');
+            $("#12").css('font-size', '20px');
+            $("#10").css('opacity', '1');
+            $("#10").css('font-size', '25px');
+        }
+        function BiggerEndocrine(){
+            $("#1").css('opacity', '0.5');
+            $("#2").css('opacity', '0.5');
+            $("#3").css('opacity', '0.5');
+            $("#4").css('opacity', '0.5');
+            $("#5").css('opacity', '0.5');
+            $("#6").css('opacity', '0.5');
+            $("#7").css('opacity', '0.5');
+            $("#8").css('opacity', '0.5');
+            $("#9").css('opacity', '0.5');
+            $("#10").css('opacity', '0.5');
+            $("#12").css('opacity', '0.5');
+            $("#1").css('font-size', '20px');
+            $("#2").css('font-size', '20px');
+            $("#3").css('font-size', '20px');
+            $("#4").css('font-size', '20px');
+            $("#5").css('font-size', '20px');
+            $("#6").css('font-size', '20px');
+            $("#7").css('font-size', '20px');
+            $("#8").css('font-size', '20px');
+            $("#9").css('font-size', '20px');
+            $("#10").css('font-size', '20px');
+            $("#12").css('font-size', '20px');
+            $("#11").css('opacity', '1');
+            $("#11").css('font-size', '25px');
+        }
+        function BiggerSkin(){
+            $("#1").css('opacity', '0.5');
+            $("#2").css('opacity', '0.5');
+            $("#3").css('opacity', '0.5');
+            $("#4").css('opacity', '0.5');
+            $("#5").css('opacity', '0.5');
+            $("#6").css('opacity', '0.5');
+            $("#7").css('opacity', '0.5');
+            $("#8").css('opacity', '0.5');
+            $("#9").css('opacity', '0.5');
+            $("#10").css('opacity', '0.5');
+            $("#11").css('opacity', '0.5');
+            $("#1").css('font-size', '20px');
+            $("#2").css('font-size', '20px');
+            $("#3").css('font-size', '20px');
+            $("#4").css('font-size', '20px');
+            $("#5").css('font-size', '20px');
+            $("#6").css('font-size', '20px');
+            $("#7").css('font-size', '20px');
+            $("#8").css('font-size', '20px');
+            $("#9").css('font-size', '20px');
+            $("#10").css('font-size', '20px');
+            $("#11").css('font-size', '20px');
+            $("#12").css('opacity', '1');
+            $("#12").css('font-size', '25px');
+        }
+        /******************************************************************************************************/
+        function mouseOver() {
+            var flag = 0;
+            $("#show_history").empty();
+            $("#show_history").css('left', '1100px');
+            $("#show_history").css('font-size', '15px');
+            $("#show_history").css('background-color', '#7FFF00');
+            for (var i = 0; i < history_records.length; i++) {
+                if(flag == 0){
+                    $("#show_history").append("History Id : " + history_records[i].id + " <br/>Medication : " + history_records[i].medication + "<br/>Blood Test : " + history_records[i].blood_test + "<br/>Surgery : " + history_records[i].surgery);
+                    flag = 1;
+                }else if(flag == 1){
+                    $("#show_history").append("<br/><br/>History Id : " + history_records[i].id + " <br/>Medication : " + history_records[i].medication + "<br/>Blood Test : " + history_records[i].blood_test + "<br/>Surgery : " + history_records[i].surgery);
+                }
+            }
+        }
+        function mouseOut(){
+            $("#show_history").empty();
+        }
+        function getMousePos(canvas, evt) {
+            var rect = canvas.getBoundingClientRect();
+            return {
+                x: evt.clientX - rect.left,
+                y: evt.clientY - rect.top
+            };
+        }
+        /******************************************************************************************************/
+
+    </script>
+</body>

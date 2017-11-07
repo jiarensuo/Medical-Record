@@ -1,0 +1,334 @@
+<html>
+<head>
+    <title> Connection</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+
+</head>
+
+<body>
+
+    <div class="row">
+        <!-- display Physiological System -->
+        <div class="col-sm-3 " style="z-index:50;padding-left:0; padding-right:0; text-align: center">
+            <table class="table" style=" border-style: solid;border-color: black;">
+                <tbody>
+                <tr><td style="text-align: center;font-size : 20px;  border-style: solid;border-color: black;">Physiological System
+                    </td></tr></tbody></table>
+            <h4 style="background-color: transparent"><button id = "1" class="btn" onclick = "displayTogether()" style ="font-size : 20px;  border-style: solid;border-color: black;background-color: white; width:200px;">All</button></h4>
+            <h4 style="background-color: transparent"><button id = "2"  class="btn" onclick = "displaySkeleton()" style ="font-size : 20px; background-color:#FF0033; width:200px;">Skeletal</button></h4>
+            <h4 style="background-color: transparent"><button id = "3"  class="btn" onclick = "displayMuscle()" style ="font-size : 20px;background-color:#6666FF;width:200px;">Muscular</button></h4>
+            <h4 style="background-color: transparent"><button id = "4" class="btn" onclick = "displayCardiovascular()" style ="font-size : 20px;background-color:#CCFF33;width:200px;">Cardiovascular</button></h4>
+            <h4 style="background-color: transparent"><button id = "5" class="btn" onclick = "displayDigestive()" style ="font-size : 20px;background-color:#00CC33;width:200px;">Digestive</button></h4>
+            <h4 style="background-color: transparent"><button id = "6" class="btn" onclick = "displayNervous()" style ="font-size : 20px;background-color:#FF66FF;width:200px;">Nervous</button></h4>
+            <h4 style="background-color: transparent"><button id = "7" class="btn" onclick = "displayImmune()" style ="font-size : 20px;background-color:#fa6900;width:200px;">Immune</button></h4>
+            <h4 style="background-color: transparent"><button id = "8" class="btn" onclick = "displayRespiratory()" style ="font-size : 20px;background-color:#00B7FF;width:200px;">Respiratory</button></h4>
+            <h4 style="background-color: transparent"><button id = "9" class="btn" onclick = "displayReproductive()" style ="font-size : 20px;background-color:#ff7f6e;width:200px;">Reproductive</button></h4>
+            <h4 style="background-color: transparent"><button id = "10" class="btn" onclick = "displayUrinary()" style ="font-size : 20px;background-color:#6e94ff;width:200px;">Urinary</button></h4>
+            <h4 style="background-color: transparent"><button id = "11" class="btn" onclick = "displayEndocrine()" style ="font-size : 20px;background-color:#ffc200;width:200px;">Endocrine</button></h4>
+        </div>
+
+
+        <div class="col-sm-2 text-center" style="z-index:50;padding-left:0; padding-right:0;"> <!--point form in the left 2 of the page -->
+
+            <form role="form" name="pointform" action='/together' method="post" style=" border-style: solid;border-color: black;alignment: center">
+
+                <div class="form-group">
+                    <label for="X Position"><h4><strong>X Position</strong></h4></label>
+                    <input type="text" class="form-control" id="fx" name="form_x" style="font-weight:900" placeholder="Enter X_Position">
+                </div>
+                <div class="form-group">
+                    <label for="Y Position"><h4><strong>Y Position</strong></h4></label>
+                    <input type="text" class="form-control" id="fy" name="form_y" style="font-weight:900" placeholder="Enter Y_Position">
+                </div>
+            </form>
+            <p id="log" style = "width:100%;color : #0000ff; z-index:30; border-color: red;"></p>
+        </div>
+
+        <div class="col-sm-2">
+            <img id="parent" src="/images/digestive.png" alt="Together System" style = 'position:absolute;top:0px; z-index :7;'/>
+            <canvas id="myCanvas" width="260" height="755" style="position:absolute;top: 0px; z-index:20" onclick=draw1(event) ondblclick=change(event)></canvas>
+        </div>
+        <div class="col-sm-5" id="myD3">
+        </div>
+    <script type="text/javascript">
+
+        /* force-directed graph*/
+
+
+
+
+
+        /********************************************************************************/
+    /* canvas*/
+        var canvas = document.getElementById('myCanvas'); //find the canvas element
+        var context = canvas.getContext('2d');// a drawing object for the canvas
+
+        /********************************************************************************/
+
+        function displayMuscle(){
+            window.open("http://127.0.0.1:3000/connection/Muscular", "_self");
+        }
+        function displaySkeleton(){
+            window.open("http://127.0.0.1:3000/connection/Skeletal", "_self");
+        }
+
+        /********************************************************************************/
+        function draw1(e) {
+            var pos = getMousePos(canvas, e);
+            posx = pos.x;
+            posy = pos.y;
+            document.pointform.form_x.value = posx;
+            document.pointform.form_y.value = posy;
+            context.clearRect ( 0 , 0 , canvas.width, canvas.height );
+            /****************************************************************************/
+            var clickedX = posx//e.pageX - this.offsetLeft-667;
+            var clickedY = posy//e.pageY - this.offsetTop;
+            context.beginPath();
+            context.arc(posx, posy, 6, 0, 2 * Math.PI, false);
+            context.fillStyle = "#000000";
+            context.fill();
+            /****************************************************************************/
+            if  (clickedX > 119 && clickedX < 208 && clickedY > 255 && clickedY < 306){
+                var svg1 = d3.select("svg") .remove();
+                var links = [
+                    {source: "Stomach ache", target: "Pancreatitis", type: "licensing"    ,weight:3,color:1},
+                    {source: "Stomach ache", target: "Gallstone", type: "licensing"    ,weight:3,color:1},
+                    {source: "Stomach ache", target: "Irritable Bowel Syndrome", type: "suit"    ,weight:3,color:1},
+                    {source: "Stomach ache", target: "Acute Appendicities", type: "suit"    ,weight:2,color:1},
+                    {source: "Stomach ache", target: "Kidney Stone", type: "resolved"    ,weight:2,color:1},
+                    {source: "Nausea", target: "Pancreatitis", type: "licensing"    ,weight:2,color:2},
+                    {source: "Vomiting", target: "Pancreatitis", type: "licensing"    ,weight:2,color:2},
+                    {source: "Constipation", target: "Acute Appendicities", type: "resolved"    ,weight:2,color:3}
+                ];
+
+                var nodes = {};
+                links.forEach(function(link) {
+                    console.log(nodes);
+                    link.source = nodes[link.source] //link.source就是节点值
+                            || (nodes[link.source] = {name: link.source});//(填加节点数据)
+
+                    link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
+                });
+
+                var width = 500,
+                        height = 600;
+
+                var force = d3.layout.force()
+                        .nodes(d3.values(nodes))
+                        .links(links)
+                        .size([width, height])
+                        .linkDistance(80)
+                        .charge(-500)
+                        .on("tick", tick)
+                        .start();
+
+                var svg = d3.select("#myD3").append("svg")
+                        .attr("width", width)
+                        .attr("height", height);
+
+                //为链接添加线
+                var link = svg.selectAll(".link")
+                        .data(force.links())
+                        .enter().append("line")
+                        .attr("class", "link");
+
+                var colors=d3.scale.category20();
+
+                link.style("stroke",function(d){//  设置线的颜色
+                            return colors(d.color);
+                        })
+                        .style("stroke-width",function(d,i){//设置线的宽度
+                            return d.weight;
+                        });
+                //为链接添加节点
+                var node = svg.selectAll(".node")
+                        .data(force.nodes())
+                        .enter().append("g")
+                        .attr("class", "node")
+                        .on("mouseover", mouseover)
+                        .on("mouseout", mouseout)
+                        .call(force.drag);
+
+
+                //设置圆点的半径，圆点的度越大weight属性值越大，可以对其做一点数学变换
+                function  radius (d){
+                    if(!d.weight){//节点weight属性没有值初始化为1（一般就是叶子了）
+                        d.weight=1;
+                    }
+                    return Math.log(d.weight)*10;
+                }
+                node.append("circle")
+                        .attr("r",function(d){  //设置圆点半径
+                            return radius (d);
+                        })
+                        .style("fill",function(d){ //设置圆点的颜色
+                            return colors(d.weight*d.weight*d.weight);
+                        }) ;
+
+                node.append("text")
+                        .attr("x", 12)
+                        .attr("dy", ".35em")
+                        .text(function(d) { return d.name; });
+
+                function tick() {//打点更新坐标
+                    link
+                            .attr("x1", function(d) { return d.source.x; })
+                            .attr("y1", function(d) { return d.source.y; })
+                            .attr("x2", function(d) { return d.target.x; })
+                            .attr("y2", function(d) { return d.target.y; });
+
+                    node
+                            .attr("transform", function(d) {
+                                return "translate(" + d.x + "," + d.y + ")";
+                            });
+                }
+
+                function mouseover() {
+                    d3.select(this).select("circle").transition()
+                            .duration(750)
+                            .attr("r", function(d){  //设置圆点半径
+                                return radius (d)+10;
+                            }) ;
+                }
+
+                function mouseout() {
+                    d3.select(this).select("circle").transition()
+                            .duration(750)
+                            .attr("r", function(d){  //恢复圆点半径
+                                return radius (d);
+                            }) ;
+                }
+
+
+            }else if (clickedX > 44 && clickedX < 198 && clickedY > 79 && clickedY < 321){
+                var svg1 = d3.select("svg") .remove();
+                var links = [
+                    {source: "Liver ache", target: "Pancreatitis", type: "licensing"    ,weight:3,color:1},
+                    {source: "Liver ache", target: "Gallstone", type: "licensing"    ,weight:3,color:1},
+
+                ];
+
+                var nodes = {};
+                links.forEach(function(link) {
+                    console.log(nodes);
+                    link.source = nodes[link.source] //link.source就是节点值
+                            || (nodes[link.source] = {name: link.source});//(填加节点数据)
+
+                    link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
+                });
+
+                var width = 500,
+                        height = 600;
+
+                var force = d3.layout.force()
+                        .nodes(d3.values(nodes))
+                        .links(links)
+                        .size([width, height])
+                        .linkDistance(80)
+                        .charge(-500)
+                        .on("tick", tick)
+                        .start();
+
+                var svg = d3.select("#myD3").append("svg")
+                        .attr("width", width)
+                        .attr("height", height);
+
+                //为链接添加线
+                var link = svg.selectAll(".link")
+                        .data(force.links())
+                        .enter().append("line")
+                        .attr("class", "link");
+
+                var colors=d3.scale.category20();
+
+                link.style("stroke",function(d){//  设置线的颜色
+                            return colors(d.color);
+                        })
+                        .style("stroke-width",function(d,i){//设置线的宽度
+                            return d.weight;
+                        });
+                //为链接添加节点
+                var node = svg.selectAll(".node")
+                        .data(force.nodes())
+                        .enter().append("g")
+                        .attr("class", "node")
+                        .on("mouseover", mouseover)
+                        .on("mouseout", mouseout)
+                        .call(force.drag);
+
+
+                //设置圆点的半径，圆点的度越大weight属性值越大，可以对其做一点数学变换
+                function  radius (d){
+                    if(!d.weight){//节点weight属性没有值初始化为1（一般就是叶子了）
+                        d.weight=1;
+                    }
+                    return Math.log(d.weight)*10;
+                }
+                node.append("circle")
+                        .attr("r",function(d){  //设置圆点半径
+                            return radius (d);
+                        })
+                        .style("fill",function(d){ //设置圆点的颜色
+                            return colors(d.weight*d.weight*d.weight);
+                        }) ;
+
+                node.append("text")
+                        .attr("x", 12)
+                        .attr("dy", ".35em")
+                        .text(function(d) { return d.name; });
+
+                function tick() {//打点更新坐标
+                    link
+                            .attr("x1", function(d) { return d.source.x; })
+                            .attr("y1", function(d) { return d.source.y; })
+                            .attr("x2", function(d) { return d.target.x; })
+                            .attr("y2", function(d) { return d.target.y; });
+
+                    node
+                            .attr("transform", function(d) {
+                                return "translate(" + d.x + "," + d.y + ")";
+                            });
+                }
+
+                function mouseover() {
+                    d3.select(this).select("circle").transition()
+                            .duration(750)
+                            .attr("r", function(d){  //设置圆点半径
+                                return radius (d)+10;
+                            }) ;
+                }
+
+                function mouseout() {
+                    d3.select(this).select("circle").transition()
+                            .duration(750)
+                            .attr("r", function(d){  //恢复圆点半径
+                                return radius (d);
+                            }) ;
+                }
+
+
+
+            }
+
+
+
+        }
+
+
+        function getMousePos(canvas, evt) {
+            var rect = canvas.getBoundingClientRect();
+            return {
+                x: evt.clientX - rect.left,
+                y: evt.clientY - rect.top
+            };
+        }
+
+
+    </script>
+</body>
+</html>

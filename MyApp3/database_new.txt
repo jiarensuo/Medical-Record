@@ -1,0 +1,159 @@
+DROP TABLE IF EXISTS Patient;
+CREATE TABLE Patient (
+ patient_id     		 INT UNSIGNED NOT NULL AUTO_INCREMENT,
+ patient_name     		 VARCHAR(20) NOT NULL,
+ sex		     		 VARCHAR(20) NOT NULL,
+ birth_date		     		 INT UNSIGNED NOT NULL,
+ photo					 VARCHAR(20) NOT NULL,
+ blood_type				 VARCHAR(20) NOT NULL,
+ allergies				 VARCHAR(20) NOT NULL,
+ address    	 		 VARCHAR(20) NOT NULL,
+ phone 		    		 VARCHAR(20) NOT NULL,
+ risk 		    		 VARCHAR(20) NOT NULL,
+ father 		    	 VARCHAR(20) NOT NULL,
+ mother 		    	 VARCHAR(20) NOT NULL,
+ paternal_grand_mother  			 VARCHAR(20) NOT NULL,
+ paternal_grand_father  			 VARCHAR(20) NOT NULL,
+ maternal_grand_mother  			 VARCHAR(20) NOT NULL,
+ maternal_grand_father  			 VARCHAR(20) NOT NULL,
+ PRIMARY KEY(patient_id)
+) ;
+
+#
+# Dumping data for table 'CD'
+#
+
+INSERT INTO Patient (patient_name, sex, birth_date, photo, blood_type, allergies, address, phone, risk, father, mother, paternal_grand_mother, paternal_grand_father, maternal_grand_mother,maternal_grand_father) VALUES ('Lee', 'Female', 45 , 'images/patient1.jpg', 'B', 'nut allergy', 'Bank/Fifth', '613-000-0000', 'risk', 'mother', 'father', 'grand_mother', 'grand_father', 'grand_mother', 'grand_father');
+
+INSERT INTO Patient (patient_name, sex, birth_date, photo, blood_type, allergies, address, phone, risk, father, mother, paternal_grand_mother, paternal_grand_father, maternal_grand_mother,maternal_grand_father) VALUES ('Wang', 'Male', 50 , 'images/patient2.jpg', 'A', 'flower allergy', 'Bank/Third', '613-111-1111', 'risk', 'mother', 'father', 'grand_mother', 'grand_father', 'grand_mother', 'grand_father');
+
+#
+#
+
+
+DROP TABLE IF EXISTS ICD;
+CREATE TABLE ICD (
+ ICD_id					 VARCHAR(20) NOT NULL,
+ ICD_description		 VARCHAR(100) NOT NULL,
+ PRIMARY KEY(ICD_id)
+) ;
+
+#
+# Dumping data for table 'CD'
+#
+
+INSERT INTO ICD (ICD_id, ICD_description) VALUES ('M00', 'Pyogenic arthritis');
+INSERT INTO ICD (ICD_id, ICD_description) VALUES ('M01', 'Direct infections of joint in infectious and parasitic diseases classified eleswhere');
+INSERT INTO ICD (ICD_id, ICD_description) VALUES ('M60', 'Soft tissue disorders');
+INSERT INTO ICD (ICD_id, ICD_description) VALUES ('I20', 'Angina pectoris');
+INSERT INTO ICD (ICD_id, ICD_description) VALUES ('I22', 'Subsequent myocardial infection');
+INSERT INTO ICD (ICD_id, ICD_description) VALUES ('I27', 'Other pulmonary heart diseases');
+INSERT INTO ICD (ICD_id, ICD_description) VALUES ('K00', 'Diseases of oral cavity, salivary glands and jaws');
+INSERT INTO ICD (ICD_id, ICD_description) VALUES ('K55', 'Other diseases of intestines');
+INSERT INTO ICD (ICD_id, ICD_description) VALUES ('K65', 'Diseases of peritoneum');
+INSERT INTO ICD (ICD_id, ICD_description) VALUES ('G80', 'Gerebral palsy and other paralytic syndromes');
+
+#
+#
+
+DROP TABLE IF EXISTS Position;
+CREATE TABLE Position (
+ position_id     		 INT UNSIGNED NOT NULL AUTO_INCREMENT,
+ position_x				 VARCHAR(20) NOT NULL,
+ position_y				 VARCHAR(20) NOT NULL,
+ disease_type			 VARCHAR(20) NOT NULL,
+ patient_id				 INT UNSIGNED NOT NULL,
+ PRIMARY KEY(position_id),
+ FOREIGN KEY (patient_id) REFERENCES Patient (patient_id) ON DELETE CASCADE
+) ;
+
+DROP TABLE IF EXISTS Diagnosis;
+CREATE TABLE Diagnosis (
+ diagnosis_id     		 INT UNSIGNED NOT NULL AUTO_INCREMENT,
+ patient_id				 INT UNSIGNED NOT NULL,
+ position_id 			 INT UNSIGNED NOT NULL,
+ ICD_id   				 VARCHAR(20),
+ severity  				 INT UNSIGNED,
+ symptom    			 VARCHAR(100),
+ clinical_note  		 VARCHAR(100),
+ PRIMARY KEY (diagnosis_id),
+ FOREIGN KEY (patient_id) REFERENCES Patient (patient_id) ON DELETE CASCADE,
+ FOREIGN KEY (position_id) REFERENCES Position (position_id) ON DELETE CASCADE,
+ FOREIGN KEY (ICD_id) REFERENCES ICD (ICD_id) ON DELETE CASCADE
+) ;
+
+DROP TABLE IF EXISTS Treatment;
+CREATE TABLE Treatment (
+ treatment_id     		 INT UNSIGNED NOT NULL AUTO_INCREMENT,
+ treatment_name			 VARCHAR(30) NOT NULL,
+ patient_id				 INT UNSIGNED NOT NULL,
+ position_id 			 INT UNSIGNED NOT NULL,
+ clinical_note  		 VARCHAR(100) NOT NULL,
+ PRIMARY KEY (treatment_id),
+ FOREIGN KEY (patient_id) REFERENCES Patient (patient_id) ON DELETE CASCADE,
+ FOREIGN KEY (position_id) REFERENCES Position (position_id) ON DELETE CASCADE
+) ;
+
+DROP TABLE IF EXISTS BloodTest;
+CREATE TABLE BloodTest (
+ bloodtest_id     		 INT UNSIGNED NOT NULL AUTO_INCREMENT,
+ patient_id				 INT UNSIGNED NOT NULL,
+ position_id 			 INT UNSIGNED NOT NULL,
+ clinical_note  		 VARCHAR(100) NOT NULL,
+ PRIMARY KEY (bloodtest_id),
+ FOREIGN KEY (patient_id) REFERENCES Patient (patient_id) ON DELETE CASCADE,
+ FOREIGN KEY (position_id) REFERENCES Position (position_id) ON DELETE CASCADE
+) ;
+
+DROP TABLE IF EXISTS Medication;
+CREATE TABLE Medication (
+ medication_id     		 INT UNSIGNED NOT NULL AUTO_INCREMENT,
+ drug_name				 VARCHAR(100) NOT NULL,
+ dosage 			   	 VARCHAR(100) NOT NULL,
+ frequency 				 VARCHAR(100) NOT NULL,
+ patient_id				 INT UNSIGNED NOT NULL,
+ position_id 			 INT UNSIGNED NOT NULL,
+ clinical_note  		 VARCHAR(100) NOT NULL,
+ PRIMARY KEY (medication_id),
+ FOREIGN KEY (patient_id) REFERENCES Patient (patient_id) ON DELETE CASCADE,
+ FOREIGN KEY (position_id) REFERENCES Position (position_id) ON DELETE CASCADE
+) ;
+
+DROP TABLE IF EXISTS Scanning;
+CREATE TABLE Scanning (
+ scanning_id     		 INT UNSIGNED NOT NULL AUTO_INCREMENT,
+ image_url 				 VARCHAR(100) NOT NULL,
+ patient_id				 INT UNSIGNED NOT NULL,
+ position_id 			 INT UNSIGNED NOT NULL,
+ clinical_note  		 VARCHAR(100) NOT NULL,
+ PRIMARY KEY (scanning_id),
+ FOREIGN KEY (patient_id) REFERENCES Patient (patient_id) ON DELETE CASCADE,
+ FOREIGN KEY (position_id) REFERENCES Position (position_id) ON DELETE CASCADE
+) ;
+
+DROP TABLE IF EXISTS History;
+CREATE TABLE History (
+ history_id     		 INT UNSIGNED NOT NULL AUTO_INCREMENT,
+ start_time				 DATE,
+ end_time				 DATE,
+ patient_id				 INT UNSIGNED NOT NULL,
+ position_id 			 INT UNSIGNED,
+ diagnosis_id			 INT UNSIGNED,
+ treatment_id			 INT UNSIGNED,
+ medication_id 			 INT UNSIGNED,
+ bloodtest_id			 INT UNSIGNED,
+ scanning_id			 INT UNSIGNED,
+
+ PRIMARY KEY (history_id),
+ FOREIGN KEY (patient_id) REFERENCES Patient (patient_id) ON DELETE CASCADE,
+ FOREIGN KEY (position_id) REFERENCES Position (position_id) ON DELETE CASCADE,
+ FOREIGN KEY (diagnosis_id) REFERENCES Diagnosis (diagnosis_id) ON DELETE CASCADE,
+ FOREIGN KEY (treatment_id) REFERENCES Treatment (treatment_id) ON DELETE CASCADE,
+ FOREIGN KEY (medication_id) REFERENCES Medication (medication_id) ON DELETE CASCADE,
+ FOREIGN KEY (bloodtest_id) REFERENCES BloodTest (bloodtest_id) ON DELETE CASCADE,
+ FOREIGN KEY (scanning_id) REFERENCES Scanning (scanning_id) ON DELETE CASCADE
+) ;
+
+
+
+
